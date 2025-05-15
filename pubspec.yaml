@@ -73,7 +73,7 @@ flutter:
     - assets/tic.png
     - assets/bot.png
     - assets/undo.png
-    - assets/ad.png
+#    - assets/Ad.png
     - assets/SkipAd.png
     - assets/logo.jpg
     - assets/icon/icon.png
