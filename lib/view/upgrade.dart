@@ -12,6 +12,7 @@ class UpgradeScreen extends StatefulWidget {
 class _UpgradeScreenState extends State<UpgradeScreen> {
   @override
   Widget build(BuildContext context) {
+    print('upgrade.dart');
     return Scaffold(
       body: BackgroundContainer(
         child: Column(

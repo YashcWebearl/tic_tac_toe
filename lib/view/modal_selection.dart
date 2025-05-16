@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tic_tac_toe/view/start_screen.dart';
 import '../Widget/bg_container.dart';
 import '../Widget/custom_appbar.dart';
 import '../Widget/custom_button.dart';
+import '../Widget/player_name_dialouge.dart';
 import '../Widget/setting_dialoug.dart';
+import '../main.dart';
 import 'difficulty_screen.dart';
 import 'game.dart';
+
 class ModeSelectionScreen extends StatefulWidget {
-  const ModeSelectionScreen({super.key});
+  final bool fromWinner;
+
+  const ModeSelectionScreen({super.key, this.fromWinner = false});
 
   @override
   State<ModeSelectionScreen> createState() => _ModeSelectionScreenState();
@@ -27,9 +33,12 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
           builder: (context, setState) {
             return AlertDialog(
               // Apply gradient background
-              backgroundColor: Colors.transparent, // Make background transparent to show gradient
-              contentPadding: EdgeInsets.zero, // Remove default padding
-              titlePadding: EdgeInsets.zero, // Remove default title padding
+              backgroundColor: Colors.transparent,
+              // Make background transparent to show gradient
+              contentPadding: EdgeInsets.zero,
+              // Remove default padding
+              titlePadding: EdgeInsets.zero,
+              // Remove default title padding
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -52,7 +61,10 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                     children: [
                       const Text(
                         'Level Difficulty',
-                        style: TextStyle(color: Colors.white, fontSize: 30,fontFamily: 'Pridi',fontWeight: FontWeight.w500),
+                        style: TextStyle(color: Colors.white,
+                            fontSize: 30,
+                            fontFamily: 'Pridi',
+                            fontWeight: FontWeight.w500),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 10),
@@ -64,7 +76,11 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                       const SizedBox(height: 10),
                       Text(
                         _difficultyText,
-                        style: TextStyle(color: _textColor, fontSize: 20,fontFamily: 'Pridi',fontWeight: FontWeight.w500), // Match text color with difficulty
+                        style: TextStyle(color: _textColor,
+                            fontSize: 20,
+                            fontFamily: 'Pridi',
+                            fontWeight: FontWeight.w500),
+                        // Match text color with difficulty
                         textAlign: TextAlign.center,
                       ),
                       // const SizedBox(height: 20),
@@ -84,7 +100,8 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                               _textColor = Color(0xff00eeff);
                             } else if (_sliderValue == 1) {
                               _difficultyText = 'MEDIUM';
-                              _dotColor = Color(0xffbbff00); // Yellow for MEDIUM
+                              _dotColor =
+                                  Color(0xffbbff00); // Yellow for MEDIUM
                               _textColor = Color(0xffbbff00);
                             } else {
                               _difficultyText = 'HIGH';
@@ -100,20 +117,23 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                         text: 'OK',
                         onPressed: () {
                           String difficulty;
-                              if (_sliderValue == 0) {
-                                difficulty = 'easy';
-                              } else if (_sliderValue == 1) {
-                                difficulty = 'medium';
-                              } else {
-                                difficulty = 'hard';
-                              }
-                              Navigator.pop(context); // Close the dialog
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TicTacToeGame(isAI: true, difficulty: difficulty),
-                                ),
-                              );
+                          if (_sliderValue == 0) {
+                            difficulty = 'Easy';
+                          } else if (_sliderValue == 1) {
+                            difficulty = 'Medium';
+                          } else {
+                            difficulty = 'Hard';
+                          }
+                          Navigator.pop(context); // Close the dialog
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  TicTacToeGame(
+                                      isAI: true, difficulty: difficulty),
+                            ),
+                          );
                         },
                       ),
                       // Move the OK button into the content
@@ -160,13 +180,26 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('modal_selection.dart');
     ScreenUtil.init(context);
-    return Scaffold(
-      body: BackgroundContainer(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 40),
+    return WillPopScope(
+      onWillPop: () async {
+        if (widget.fromWinner) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const StartScreen()),
+          );
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        body: BackgroundContainer(
+          child: SingleChildScrollView(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                const SizedBox(height: 40),
             CustomTopBar(
               coins: 500,
               onBack: () => Navigator.pop(context),
@@ -217,11 +250,39 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const TicTacToeGame(isAI: false)),
+                      builder: (context) => const TicTacToeGame(isAI: false,difficulty: '',)),
                 );
               },
             ),
-          ],
+
+            // RoundedGradientButton(
+            //   text: 'VS',
+            //   leftIcon: const Icon(Icons.person, color: Color(0xFF2C004C)),
+            //     rightIcon: Icon(Icons.person, color: Color(0xFF2C004C)),
+            //   onPressed: () {
+            //   showDialog(
+            //     context: context,
+            //     builder: (context) => PlayerNamesDialog(),
+            //   ).then((result) {
+            //     if (result != null) {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) =>
+            //               TicTacToeGame(
+            //                 isAI: false,
+            //                 playerXName: result['x'],
+            //                 playerOName: result['o'],
+            //               ),
+            //         ),
+            //       );
+            //     }
+            //   });
+            // },
+            // )
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -324,10 +385,6 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
 //     );
 //   }
 // }
-
-
-
-
 
 
 // import 'package:flutter/material.dart';

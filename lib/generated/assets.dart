@@ -2,9 +2,11 @@
 class Assets {
   Assets._();
 
+  static const String assets20 = 'assets/20.png';
   static const String assetsAd = 'assets/Ad.png';
   static const String assetsBg = 'assets/bg.png';
   static const String assetsBot = 'assets/bot.png';
+  static const String assetsBox = 'assets/Box.png';
   static const String assetsCoin = 'assets/coin.png';
   static const String assetsFireworks = 'assets/fireworks.png';
   static const String assetsFireworksRed = 'assets/fireworksRed.png';
@@ -18,9 +20,15 @@ class Assets {
   static const String assetsTicTacToe = 'assets/tic_tac_toe.png';
   static const String assetsUndo = 'assets/undo.png';
   static const String iconIcon = 'assets/icon/icon.png';
+  static const String musicButtonClick = 'assets/music/button_click.mp3';
+  static const String musicLose = 'assets/music/Lose.mp3';
+  static const String musicMoneyCut = 'assets/music/Money.mp3';
+  static const String musicWin = 'assets/music/Win.mp3';
+  static const String musicXplace = 'assets/music/Xplace.mp3';
   static const String ticTacToeAssetsAd = 'assets/Ad.png';
   static const String ticTacToeAssetsBg = 'assets/bg.png';
   static const String ticTacToeAssetsBot = 'assets/bot.png';
+  static const String ticTacToeAssetsBox = 'assets/Box.png';
   static const String ticTacToeAssetsCoin = 'assets/coin.png';
   static const String ticTacToeAssetsLogo = 'assets/logo.jpg';
   static const String ticTacToeAssetsSkipAd = 'assets/SkipAd.png';

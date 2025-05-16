@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../Widget/bg_container.dart';
 import 'game.dart';
 
@@ -7,6 +8,8 @@ class DifficultySelectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context);
+    print('difficulty.dart');
     return Scaffold(
       backgroundColor: const Color(0xFF0A1C3A),
       appBar: AppBar(

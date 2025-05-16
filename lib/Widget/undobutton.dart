@@ -70,7 +70,7 @@ class CustomIconButton extends StatelessWidget {
           child: Text(
             label!,
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 20,
               fontFamily: 'Pridi',
               fontWeight: FontWeight.w500,
               color: labelColor,
@@ -86,7 +86,7 @@ class CustomIconButton extends StatelessWidget {
             Text(
               label!,
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 20,
                 fontFamily: 'Pridi',
                 fontWeight: FontWeight.w500,
                 color: labelColor,

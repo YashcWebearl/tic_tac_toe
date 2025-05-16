@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/Widget/sound.dart';
 
 class RoundedGradientButton extends StatelessWidget {
   final String? text;
   final Widget? leftIcon;
   final Widget? rightIcon;
   final double width;
+  final double height;
   final VoidCallback onPressed;
 
   const RoundedGradientButton({
@@ -13,16 +15,20 @@ class RoundedGradientButton extends StatelessWidget {
     this.leftIcon,
     this.rightIcon,
     this.width =300,
+    this.height =57,
     required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap:(){
+        AudioHelper().playButtonClick();
+        onPressed();
+      } ,
       child: Container(
         width: width,
-        height: 57,
+        height: height,
         padding: const EdgeInsets.symmetric(horizontal: 24),
         decoration: BoxDecoration(
           gradient: const LinearGradient(

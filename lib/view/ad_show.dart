@@ -42,6 +42,8 @@ class _AdPlaybackPageState extends State<AdPlaybackPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    print('ad_show.dart');
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(

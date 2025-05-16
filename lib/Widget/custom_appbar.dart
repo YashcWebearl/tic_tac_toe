@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/Widget/sound.dart';
 
 class CustomTopBar extends StatelessWidget {
   final int coins;
   final VoidCallback onBack;
   final VoidCallback onSettings;
+  final bool isGame; // NEW
+  final bool isWinner;
 
   const CustomTopBar({
     super.key,
     required this.coins,
     required this.onBack,
     required this.onSettings,
+    this.isGame = false,
+    this.isWinner = false,
   });
 
   @override
@@ -24,10 +29,17 @@ class CustomTopBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Back Button
+          isWinner == true ?
+      SizedBox(width: 48)
+          :
           _buildRoundedIcon(
-            icon: Icons.arrow_back_ios_new_rounded,
+            icon: isGame ? Icons.close_rounded : Icons.arrow_back_ios_new_rounded,
             onTap: onBack,
           ),
+          // _buildRoundedIcon(
+          //   icon: Icons.arrow_back_ios_new_rounded,
+          //   onTap: onBack,
+          // ),
 
           // Coins Display
           Container(
@@ -76,14 +88,17 @@ class CustomTopBar extends StatelessWidget {
 
   Widget _buildRoundedIcon({required IconData icon, required VoidCallback onTap}) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: (){
+        AudioHelper().playButtonClick();
+        onTap();
+      },
       child: Container(
         width: 48,
         height: 48,
         decoration: BoxDecoration(
           color: const Color(0xFF400CB9), // Deep purple
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white, width: 2),
+          border: Border.all(color: Colors.white, width: 1),
           boxShadow: const [
             BoxShadow(
               color: Colors.black26,
