@@ -1,26 +1,99 @@
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:tic_tac_toe/view/google_sign_in.dart';
+// import 'package:tic_tac_toe/view/start_screen.dart';
+//
+// import 'Widget/sound.dart';
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   print('sound fetch');
+//   await AudioHelper().initialize();
+//   SystemChrome.setPreferredOrientations([
+//     DeviceOrientation.portraitUp,
+//     DeviceOrientation.portraitDown,
+//   ]).then((_) {
+//     runApp(const MyApp());
+//   });
+//   // runApp(
+//   //   const MyApp(),
+//   // );
+// }
+//
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return ScreenUtilInit(
+//       designSize: const Size(375, 812),
+//       minTextAdapt: true,
+//       splitScreenMode: true,
+//       builder: (context, child) {
+//         return  MaterialApp(
+//           debugShowCheckedModeBanner: false,
+//           // home: StartScreen(),
+//           home: SignInDemo(),
+//         );
+//       },
+//     );
+//   }
+// }
+
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tic_tac_toe/view/google_sign_in.dart';
+import 'package:tic_tac_toe/view/splash.dart';
 import 'package:tic_tac_toe/view/start_screen.dart';
+import 'package:tic_tac_toe/view/welcome_page.dart';
+import 'package:tic_tac_toe/view/winner_page.dart';
 
+import 'Widget/coin_noti.dart';
 import 'Widget/sound.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   print('sound fetch');
+
   await AudioHelper().initialize();
-  SystemChrome.setPreferredOrientations([
+
+  // Set portrait orientation
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_) {
-    runApp(const MyApp());
-  });
-  // runApp(
-  //   const MyApp(),
-  // );
+  ]);
+  await CoinNotifier.initialize();
+  runApp(const MyApp()); // ← No need to pass login state here
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool? isLoggedIn;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    print('token is: $token');
+    setState(() {
+      isLoggedIn = token != null && token.isNotEmpty;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,17 +102,62 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return  MaterialApp(
+        return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: StartScreen(),
-          // home: SignInDemo(),
+          // home: isLoggedIn == null
+          //     ? const Scaffold(
+          //   body: Center(child: CircularProgressIndicator()),
+          // )
+          //     : isLoggedIn!
+          //     ?  StartScreen()
+          //     :  WelcomeScreen()
+          home: const SplashScreen(),
         );
       },
     );
   }
 }
 
-
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   print('sound fetch');
+//
+//   await AudioHelper().initialize();
+//
+//   // Set portrait orientation
+//   await SystemChrome.setPreferredOrientations([
+//     DeviceOrientation.portraitUp,
+//     DeviceOrientation.portraitDown,
+//   ]);
+//
+//   // Get auth token
+//   final prefs = await SharedPreferences.getInstance();
+//   final String? token = prefs.getString('auth_token');
+//   print('token is:-$token');
+//   // Run app and pass token status
+//   runApp(MyApp(isLoggedIn: token != null && token.isNotEmpty));
+// }
+// class MyApp extends StatelessWidget {
+//   final bool isLoggedIn;
+//
+//   const MyApp({super.key, required this.isLoggedIn});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return ScreenUtilInit(
+//       designSize: const Size(375, 812),
+//       minTextAdapt: true,
+//       splitScreenMode: true,
+//       builder: (context, child) {
+//         return MaterialApp(
+//           debugShowCheckedModeBanner: false,
+//           home: isLoggedIn ?  StartScreen() :  SignInDemo(),
+//           // home: StartScreen(),
+//         );
+//       },
+//     );
+//   }
+// }
 
 
 

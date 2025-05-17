@@ -276,6 +276,7 @@
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import '../Widget/bg_container.dart';
+import '../Widget/coin_add_service.dart';
 import '../Widget/custom_appbar.dart';
 import '../Widget/custom_button.dart';
 import '../Widget/setting_dialoug.dart';
@@ -304,8 +305,16 @@ class _WinnerPageState extends State<WinnerPage> {
     super.initState();
     _confettiController = ConfettiController(duration: const Duration(seconds: 5));
     _confettiController.play();
+    _addCoins();
   }
-
+  void _addCoins() async {
+    try {
+      await CoinService.addCoins(coins: widget.coinReward);
+      print("Coins successfully added.");
+    } catch (e) {
+      print("Error adding coins: $e");
+    }
+  }
   @override
   void dispose() {
     _confettiController.dispose();
@@ -338,7 +347,7 @@ class _WinnerPageState extends State<WinnerPage> {
                     children: [
                       SizedBox(height: screenSize.height * 0.04),
                       CustomTopBar(
-                        coins: 500,
+                        // coins: 500,
                         isWinner: true,
                         onBack: () {
                           Navigator.pushReplacement(

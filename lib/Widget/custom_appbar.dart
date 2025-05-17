@@ -1,8 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:tic_tac_toe/Widget/sound.dart';
+import 'dart:convert';
 
-class CustomTopBar extends StatelessWidget {
-  final int coins;
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tic_tac_toe/Widget/sound.dart';
+import 'package:http/http.dart' as http;
+
+import 'base.dart';
+import 'coin_noti.dart';
+
+class CustomTopBar extends StatefulWidget {
+  // final int coins;
   final VoidCallback onBack;
   final VoidCallback onSettings;
   final bool isGame; // NEW
@@ -10,12 +17,90 @@ class CustomTopBar extends StatelessWidget {
 
   const CustomTopBar({
     super.key,
-    required this.coins,
+    // required this.coins,
     required this.onBack,
     required this.onSettings,
     this.isGame = false,
     this.isWinner = false,
   });
+
+  @override
+  State<CustomTopBar> createState() => _CustomTopBarState();
+}
+
+class _CustomTopBarState extends State<CustomTopBar> {
+  int coins = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getCoin();
+  }
+  Future<void> _getCoin() async {
+    final uri = Uri.parse('$LURL/api/coin/display');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    print('token is 11111111:- ${prefs.getString('auth_token')}');
+    final response = await http.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token ?? '',
+      },
+    );
+    print('coin is :- ${coins}');
+    print('response is :- ${response.statusCode}');
+    print('response  data is :- ${response.body}');
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      final int fetchedCoins = jsonResponse['coins'];
+
+      // Update the notifier
+      CoinNotifier.coins.value = fetchedCoins;
+
+      // Cache the new value
+      await prefs.setInt('user_coins', fetchedCoins);
+    } else {
+      print('API error: ${response.statusCode}, ${response.body}');
+    }
+  }
+
+  // Future<void> _getCoin() async {
+  //     final uri = Uri.parse('$LURL/api/coin/display');
+  //
+  //     // Retrieve token from SharedPreferences
+  //     final prefs = await SharedPreferences.getInstance();
+  //     final token = prefs.getString('auth_token');
+  //
+  //     final response = await http.get(
+  //       uri,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': token ?? '',
+  //       },
+  //     );
+  //
+  //     print('status code:-${response.statusCode}');
+  //     print('response body:-${response.body}');
+  //
+  //     if (response.statusCode == 200) {
+  //       final jsonResponse = jsonDecode(response.body);
+  //       coins = jsonResponse['coins'];
+  //       setState(() {
+  //         coins = coins;
+  //       });
+  //
+  //       // ✅ Save coins to SharedPreferences
+  //       await prefs.setInt('user_coins', coins);
+  //       print('Coins saved: $coins');
+  //
+  //       // _showCoinReceivedDialog(coins);
+  //     } else {
+  //       print('API error: ${response.statusCode}, ${response.body}');
+  //     }
+  //
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +114,12 @@ class CustomTopBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Back Button
-          isWinner == true ?
+          widget.isWinner == true ?
       SizedBox(width: 48)
           :
           _buildRoundedIcon(
-            icon: isGame ? Icons.close_rounded : Icons.arrow_back_ios_new_rounded,
-            onTap: onBack,
+            icon: widget.isGame ? Icons.close_rounded : Icons.arrow_back_ios_new_rounded,
+            onTap: widget.onBack,
           ),
           // _buildRoundedIcon(
           //   icon: Icons.arrow_back_ios_new_rounded,
@@ -64,13 +149,18 @@ class CustomTopBar extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 5),
-                Text(
-                  '$coins',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2C004C),
-                  ),
+                ValueListenableBuilder<int>(
+                    valueListenable: CoinNotifier.coins,
+                    builder: (context, coinsValue, child) {
+                    return Text(
+                      '$coinsValue',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2C004C),
+                      ),
+                    );
+                  }
                 ),
               ],
             ),
@@ -79,7 +169,7 @@ class CustomTopBar extends StatelessWidget {
           // Settings Button
           _buildRoundedIcon(
             icon: Icons.settings,
-            onTap: onSettings,
+            onTap: widget.onSettings,
           ),
         ],
       ),

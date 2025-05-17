@@ -12,8 +12,14 @@ class Assets {
   static const String assetsFireworksRed = 'assets/fireworksRed.png';
   static const String assetsFireworksYellow = 'assets/fireworksYellow.png';
   static const String assetsFree = 'assets/free.png';
+  static const String assetsGoogleLogo = 'assets/google_logo.png';
   static const String assetsIconIcon = 'assets/icon/icon.png';
   static const String assetsLogo = 'assets/logo.jpg';
+  static const String assetsMusicButtonClick = 'assets/music/button_click.mp3';
+  static const String assetsMusicLose = 'assets/music/Lose.mp3';
+  static const String assetsMusicMoney = 'assets/music/Money.mp3';
+  static const String assetsMusicWin = 'assets/music/Win.mp3';
+  static const String assetsMusicXplace = 'assets/music/Xplace.mp3';
   static const String assetsPreimium = 'assets/preimium.png';
   static const String assetsSkipAd = 'assets/SkipAd.png';
   static const String assetsTic = 'assets/tic.png';
@@ -22,7 +28,7 @@ class Assets {
   static const String iconIcon = 'assets/icon/icon.png';
   static const String musicButtonClick = 'assets/music/button_click.mp3';
   static const String musicLose = 'assets/music/Lose.mp3';
-  static const String musicMoneyCut = 'assets/music/Money.mp3';
+  static const String musicMoney = 'assets/music/Money.mp3';
   static const String musicWin = 'assets/music/Win.mp3';
   static const String musicXplace = 'assets/music/Xplace.mp3';
   static const String ticTacToeAssetsAd = 'assets/Ad.png';

@@ -203,6 +203,8 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/Widget/sound.dart';
 import 'package:tic_tac_toe/Widget/undobutton.dart';
+import 'package:tic_tac_toe/view/welcome_page.dart';
+import '../view/upgrade.dart';
 import 'custom_button.dart';
 
 class SettingsDialog extends StatefulWidget {
@@ -280,7 +282,14 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       height: 60,
                     ),
                     CustomIconButton(
-                      onTap: () {}, // For vibration toggle (optional)
+                      onTap: () {
+                        Navigator.of(context).pop(); // Close settings dialog
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>  UpgradeScreen()),
+                        );
+                      }, // For vibration toggle (optional)
                       iconWidget: Icon(Icons.vibration, size: 35, color: Colors.black),
                       width: 60,
                       height: 60,
@@ -290,69 +299,69 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 const SizedBox(height: 20),
 
                 // const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'THEME:-',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                    SizedBox(width: 5),
-                    Row(
-                      children: [
-                        Radio<String>(
-                          value: 'Premium',
-                          groupValue: _selectedTheme,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedTheme = value!;
-                              AudioHelper().playButtonClick();
-                              // Add theme change logic here
-                            });
-                          },
-                          activeColor: Colors.white,
-                        ),
-                        const Text(
-                          'Premium',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Radio<String>(
-                          value: 'Free',
-                          groupValue: _selectedTheme,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedTheme = value!;
-                              AudioHelper().playButtonClick();
-                              // Add theme change logic here
-                            });
-                          },
-                          activeColor: Colors.white,
-                        ),
-                        const Text(
-                          'Free',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     const Text(
+                //       'THEME:-',
+                //       style: TextStyle(
+                //         color: Colors.white,
+                //         fontSize: 18,
+                //         fontWeight: FontWeight.bold,
+                //         letterSpacing: 1,
+                //       ),
+                //     ),
+                //     SizedBox(width: 5),
+                //     Row(
+                //       children: [
+                //         Radio<String>(
+                //           value: 'Premium',
+                //           groupValue: _selectedTheme,
+                //           onChanged: (value) {
+                //             setState(() {
+                //               _selectedTheme = value!;
+                //               AudioHelper().playButtonClick();
+                //               // Add theme change logic here
+                //             });
+                //           },
+                //           activeColor: Colors.white,
+                //         ),
+                //         const Text(
+                //           'Premium',
+                //           style: TextStyle(
+                //             color: Colors.white,
+                //             fontSize: 16,
+                //             fontWeight: FontWeight.w400,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //     Row(
+                //       children: [
+                //         Radio<String>(
+                //           value: 'Free',
+                //           groupValue: _selectedTheme,
+                //           onChanged: (value) {
+                //             setState(() {
+                //               _selectedTheme = value!;
+                //               AudioHelper().playButtonClick();
+                //               // Add theme change logic here
+                //             });
+                //           },
+                //           activeColor: Colors.white,
+                //         ),
+                //         const Text(
+                //           'Free',
+                //           style: TextStyle(
+                //             color: Colors.white,
+                //             fontSize: 16,
+                //             fontWeight: FontWeight.w400,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ],
+                // ),
                 const SizedBox(height: 20),
                 RoundedGradientButton(
                   text: 'Log Out',
@@ -434,7 +443,11 @@ class LogoutConfirmationDialog extends StatelessWidget {
                         AudioHelper().playButtonClick();
                         // Add logout logic here (e.g., clear user session, navigate to login screen)
                         Navigator.of(context).pop(); // Close confirmation dialog
-                        Navigator.of(context).pop(); // Close settings dialog
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                        );
+                        // Close settings dialog
                         // Example: Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                       },
                       width: 100,

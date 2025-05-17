@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'custom_button.dart';
 
 class PlayerNamesDialog extends StatefulWidget {
@@ -44,6 +45,8 @@ class _PlayerNamesDialogState extends State<PlayerNamesDialog> {
             // Player X Input
             TextField(
               controller: _xNameController,
+              maxLength: 10,
+              inputFormatters: [LengthLimitingTextInputFormatter(10)],
               decoration: InputDecoration(
                 labelText: 'X Player Name',
                 labelStyle: const TextStyle(color: Colors.white),
@@ -60,6 +63,8 @@ class _PlayerNamesDialogState extends State<PlayerNamesDialog> {
             if (!widget.isAi)
               TextField(
                 controller: _oNameController,
+                maxLength: 10,
+                inputFormatters: [LengthLimitingTextInputFormatter(10)],
                 decoration: InputDecoration(
                   labelText: 'O Player Name',
                   labelStyle: const TextStyle(color: Colors.white),

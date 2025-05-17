@@ -1,3 +1,295 @@
+// import 'package:flutter/material.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:tic_tac_toe/view/start_screen.dart';
+// import '../Widget/bg_container.dart';
+// import '../Widget/custom_appbar.dart';
+// import '../Widget/custom_button.dart';
+// import '../Widget/player_name_dialouge.dart';
+// import '../Widget/setting_dialoug.dart';
+// import '../main.dart';
+// import 'difficulty_screen.dart';
+// import 'game.dart';
+//
+// class ModeSelectionScreen extends StatefulWidget {
+//   final bool fromWinner;
+//
+//   const ModeSelectionScreen({super.key, this.fromWinner = false});
+//
+//   @override
+//   State<ModeSelectionScreen> createState() => _ModeSelectionScreenState();
+// }
+//
+// class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
+//   void _showDifficultyDialog(BuildContext context) {
+//     double _sliderValue = 0; // 0: Easy, 1: Medium, 2: Hard
+//     String _difficultyText = 'LOW'; // Displayed text
+//     Color _dotColor = Color(0xff00eeff); // Color for the dot and icon
+//     Color _textColor = Color(0xff00eeff); // Color for the text
+//
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return StatefulBuilder(
+//           builder: (context, setState) {
+//             return AlertDialog(
+//               // Apply gradient background
+//               backgroundColor: Colors.transparent,
+//               // Make background transparent to show gradient
+//               contentPadding: EdgeInsets.zero,
+//               // Remove default padding
+//               titlePadding: EdgeInsets.zero,
+//               // Remove default title padding
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(20),
+//               ),
+//               content: Container(
+//                 decoration: const BoxDecoration(
+//                   gradient: LinearGradient(
+//                     begin: Alignment.topCenter,
+//                     end: Alignment.bottomCenter,
+//                     colors: [
+//                       Color(0xFFA949F2), // Top color
+//                       Color(0xFF3304B3), // Bottom color
+//                     ],
+//                   ),
+//                   borderRadius: BorderRadius.all(Radius.circular(20)),
+//                 ),
+//                 child: Padding(
+//                   padding: const EdgeInsets.all(20.0),
+//                   child: Column(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: [
+//                       const Text(
+//                         'Level Difficulty',
+//                         style: TextStyle(color: Colors.white,
+//                             fontSize: 30,
+//                             fontFamily: 'Pridi',
+//                             fontWeight: FontWeight.w500),
+//                         textAlign: TextAlign.center,
+//                       ),
+//                       const SizedBox(height: 10),
+//                       Icon(
+//                         Icons.sentiment_very_satisfied,
+//                         color: _dotColor, // Match icon color with difficulty
+//                         size: 120,
+//                       ),
+//                       const SizedBox(height: 10),
+//                       Text(
+//                         _difficultyText,
+//                         style: TextStyle(color: _textColor,
+//                             fontSize: 20,
+//                             fontFamily: 'Pridi',
+//                             fontWeight: FontWeight.w500),
+//                         // Match text color with difficulty
+//                         textAlign: TextAlign.center,
+//                       ),
+//                       // const SizedBox(height: 20),
+//                       Slider(
+//                         value: _sliderValue,
+//                         min: 0,
+//                         max: 2,
+//                         divisions: 2,
+//                         activeColor: _dotColor,
+//                         inactiveColor: Colors.white,
+//                         onChanged: (value) {
+//                           setState(() {
+//                             _sliderValue = value;
+//                             if (_sliderValue == 0) {
+//                               _difficultyText = 'LOW';
+//                               _dotColor = Color(0xff00eeff); // Blue for LOW
+//                               _textColor = Color(0xff00eeff);
+//                             } else if (_sliderValue == 1) {
+//                               _difficultyText = 'MEDIUM';
+//                               _dotColor =
+//                                   Color(0xffbbff00); // Yellow for MEDIUM
+//                               _textColor = Color(0xffbbff00);
+//                             } else {
+//                               _difficultyText = 'HIGH';
+//                               _dotColor = Color(0xffff0000); // Red for HIGH
+//                               _textColor = Color(0xffff0000);
+//                             }
+//                           });
+//                         },
+//                       ),
+//                       // const SizedBox(height: 20),
+//                       RoundedGradientButton(
+//                         width: 112,
+//                         text: 'OK',
+//                         onPressed: () {
+//                           String difficulty;
+//                           if (_sliderValue == 0) {
+//                             difficulty = 'Easy';
+//                           } else if (_sliderValue == 1) {
+//                             difficulty = 'Medium';
+//                           } else {
+//                             difficulty = 'Hard';
+//                           }
+//                           Navigator.pop(context); // Close the dialog
+//
+//                           Navigator.push(
+//                             context,
+//                             MaterialPageRoute(
+//                               builder: (context) =>
+//                                   TicTacToeGame(
+//                                       isAI: true, difficulty: difficulty),
+//                             ),
+//                           );
+//                         },
+//                       ),
+//                       // Move the OK button into the content
+//                       // ElevatedButton(
+//                       //   onPressed: () {
+//                       //     String difficulty;
+//                       //     if (_sliderValue == 0) {
+//                       //       difficulty = 'easy';
+//                       //     } else if (_sliderValue == 1) {
+//                       //       difficulty = 'medium';
+//                       //     } else {
+//                       //       difficulty = 'hard';
+//                       //     }
+//                       //     Navigator.pop(context); // Close the dialog
+//                       //     Navigator.push(
+//                       //       context,
+//                       //       MaterialPageRoute(
+//                       //         builder: (context) => TicTacToeGame(isAI: true, difficulty: difficulty),
+//                       //       ),
+//                       //     );
+//                       //   },
+//                       //   style: ElevatedButton.styleFrom(
+//                       //     backgroundColor: Colors.cyan,
+//                       //     shape: const CircleBorder(),
+//                       //     padding: const EdgeInsets.all(20),
+//                       //   ),
+//                       //   child: const Text(
+//                       //     'OK',
+//                       //     style: TextStyle(color: Colors.white, fontSize: 18),
+//                       //   ),
+//                       // ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//               // Remove the actions section since the button is now in content
+//               actions: [],
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     print('modal_selection.dart');
+//     ScreenUtil.init(context);
+//     return WillPopScope(
+//       onWillPop: () async {
+//         if (widget.fromWinner) {
+//           Navigator.pushReplacement(
+//             context,
+//             MaterialPageRoute(builder: (context) => const StartScreen()),
+//           );
+//           return false;
+//         }
+//         return true;
+//       },
+//       child: Scaffold(
+//         body: BackgroundContainer(
+//           child: SingleChildScrollView(
+//             child: Column(
+//                 mainAxisAlignment: MainAxisAlignment.start,
+//                 children: [
+//                 const SizedBox(height: 40),
+//             CustomTopBar(
+//               coins: 500,
+//               onBack: () => Navigator.pop(context),
+//               onSettings: () {
+//                 showDialog(
+//                   context: context,
+//                   builder: (context) => const SettingsDialog(),
+//                 );
+//               },
+//             ),
+//             SizedBox(height: 30),
+//             Text('SELECT LEVEL', style: TextStyle(
+//                 fontFamily: 'Pridi',
+//                 fontSize: 36,
+//                 color: Colors.white,
+//                 fontWeight: FontWeight.w500
+//             ),),
+//             const SizedBox(height: 15),
+//             Image.asset(
+//               'assets/tic.png',
+//               width: 300,
+//               height: 300,
+//             ),
+//             SizedBox(height: 80),
+//             RoundedGradientButton(
+//               text: 'VS',
+//               leftIcon: const Icon(Icons.person,
+//                   color: Color(0xFF2C004C), size: 30),
+//               rightIcon: Image.asset('assets/bot.png', width: 30, height: 30),
+//
+//               onPressed: () {
+//                 // Navigator.push(
+//                 //   context,
+//                 //   MaterialPageRoute(builder: (
+//                 //       context) => const DifficultySelectionScreen()),
+//                 // );
+//                 _showDifficultyDialog(context);
+//               },
+//             ),
+//             SizedBox(height: 15),
+//             RoundedGradientButton(
+//               text: 'VS',
+//               leftIcon: const Icon(Icons.person,
+//                   color: Color(0xFF2C004C), size: 30),
+//               rightIcon: const Icon(Icons.person,
+//                   color: Color(0xFF2C004C), size: 30),
+//               onPressed: () {
+//                 Navigator.push(
+//                   context,
+//                   MaterialPageRoute(
+//                       builder: (context) => const TicTacToeGame(isAI: false,difficulty: '',)),
+//                 );
+//               },
+//             ),
+//
+//             // RoundedGradientButton(
+//             //   text: 'VS',
+//             //   leftIcon: const Icon(Icons.person, color: Color(0xFF2C004C)),
+//             //     rightIcon: Icon(Icons.person, color: Color(0xFF2C004C)),
+//             //   onPressed: () {
+//             //   showDialog(
+//             //     context: context,
+//             //     builder: (context) => PlayerNamesDialog(),
+//             //   ).then((result) {
+//             //     if (result != null) {
+//             //       Navigator.push(
+//             //         context,
+//             //         MaterialPageRoute(
+//             //           builder: (context) =>
+//             //               TicTacToeGame(
+//             //                 isAI: false,
+//             //                 playerXName: result['x'],
+//             //                 playerOName: result['o'],
+//             //               ),
+//             //         ),
+//             //       );
+//             //     }
+//             //   });
+//             // },
+//             // )
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tic_tac_toe/view/start_screen.dart';
@@ -6,7 +298,6 @@ import '../Widget/custom_appbar.dart';
 import '../Widget/custom_button.dart';
 import '../Widget/player_name_dialouge.dart';
 import '../Widget/setting_dialoug.dart';
-import '../main.dart';
 import 'difficulty_screen.dart';
 import 'game.dart';
 
@@ -21,10 +312,10 @@ class ModeSelectionScreen extends StatefulWidget {
 
 class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
   void _showDifficultyDialog(BuildContext context) {
-    double _sliderValue = 0; // 0: Easy, 1: Medium, 2: Hard
-    String _difficultyText = 'LOW'; // Displayed text
-    Color _dotColor = Color(0xff00eeff); // Color for the dot and icon
-    Color _textColor = Color(0xff00eeff); // Color for the text
+    double _sliderValue = 0;
+    String _difficultyText = 'LOW';
+    Color _dotColor = const Color(0xff00eeff);
+    Color _textColor = const Color(0xff00eeff);
 
     showDialog(
       context: context,
@@ -32,13 +323,9 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              // Apply gradient background
               backgroundColor: Colors.transparent,
-              // Make background transparent to show gradient
               contentPadding: EdgeInsets.zero,
-              // Remove default padding
               titlePadding: EdgeInsets.zero,
-              // Remove default title padding
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -47,43 +334,42 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0xFFA949F2), // Top color
-                      Color(0xFF3304B3), // Bottom color
-                    ],
+                    colors: [Color(0xFFA949F2), Color(0xFF3304B3)],
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: EdgeInsets.all(20),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
+                      Text(
                         'Level Difficulty',
-                        style: TextStyle(color: Colors.white,
-                            fontSize: 30,
-                            fontFamily: 'Pridi',
-                            fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontFamily: 'Pridi',
+                          fontWeight: FontWeight.w500,
+                        ),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10),
                       Icon(
                         Icons.sentiment_very_satisfied,
-                        color: _dotColor, // Match icon color with difficulty
+                        color: _dotColor,
                         size: 120,
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10),
                       Text(
                         _difficultyText,
-                        style: TextStyle(color: _textColor,
-                            fontSize: 20,
-                            fontFamily: 'Pridi',
-                            fontWeight: FontWeight.w500),
-                        // Match text color with difficulty
+                        style: TextStyle(
+                          color: _textColor,
+                          fontSize: 20,
+                          fontFamily: 'Pridi',
+                          fontWeight: FontWeight.w500,
+                        ),
                         textAlign: TextAlign.center,
                       ),
-                      // const SizedBox(height: 20),
                       Slider(
                         value: _sliderValue,
                         min: 0,
@@ -96,22 +382,21 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                             _sliderValue = value;
                             if (_sliderValue == 0) {
                               _difficultyText = 'LOW';
-                              _dotColor = Color(0xff00eeff); // Blue for LOW
-                              _textColor = Color(0xff00eeff);
+                              _dotColor = const Color(0xff00eeff);
+                              _textColor = const Color(0xff00eeff);
                             } else if (_sliderValue == 1) {
                               _difficultyText = 'MEDIUM';
-                              _dotColor =
-                                  Color(0xffbbff00); // Yellow for MEDIUM
-                              _textColor = Color(0xffbbff00);
+                              _dotColor = const Color(0xffbbff00);
+                              _textColor = const Color(0xffbbff00);
                             } else {
                               _difficultyText = 'HIGH';
-                              _dotColor = Color(0xffff0000); // Red for HIGH
-                              _textColor = Color(0xffff0000);
+                              _dotColor = const Color(0xffff0000);
+                              _textColor = const Color(0xffff0000);
                             }
                           });
                         },
                       ),
-                      // const SizedBox(height: 20),
+                      SizedBox(height: 10),
                       RoundedGradientButton(
                         width: 112,
                         text: 'OK',
@@ -124,52 +409,22 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                           } else {
                             difficulty = 'Hard';
                           }
-                          Navigator.pop(context); // Close the dialog
-
+                          Navigator.pop(context);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  TicTacToeGame(
-                                      isAI: true, difficulty: difficulty),
+                              builder: (context) => TicTacToeGame(
+                                isAI: true,
+                                difficulty: difficulty,
+                              ),
                             ),
                           );
                         },
                       ),
-                      // Move the OK button into the content
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     String difficulty;
-                      //     if (_sliderValue == 0) {
-                      //       difficulty = 'easy';
-                      //     } else if (_sliderValue == 1) {
-                      //       difficulty = 'medium';
-                      //     } else {
-                      //       difficulty = 'hard';
-                      //     }
-                      //     Navigator.pop(context); // Close the dialog
-                      //     Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //         builder: (context) => TicTacToeGame(isAI: true, difficulty: difficulty),
-                      //       ),
-                      //     );
-                      //   },
-                      //   style: ElevatedButton.styleFrom(
-                      //     backgroundColor: Colors.cyan,
-                      //     shape: const CircleBorder(),
-                      //     padding: const EdgeInsets.all(20),
-                      //   ),
-                      //   child: const Text(
-                      //     'OK',
-                      //     style: TextStyle(color: Colors.white, fontSize: 18),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
               ),
-              // Remove the actions section since the button is now in content
               actions: [],
             );
           },
@@ -180,14 +435,12 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('modal_selection.dart');
-    ScreenUtil.init(context);
     return WillPopScope(
       onWillPop: () async {
         if (widget.fromWinner) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const StartScreen()),
+            MaterialPageRoute(builder: (context) =>  StartScreen()),
           );
           return false;
         }
@@ -197,89 +450,63 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
         body: BackgroundContainer(
           child: SingleChildScrollView(
             child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                const SizedBox(height: 40),
-            CustomTopBar(
-              coins: 500,
-              onBack: () => Navigator.pop(context),
-              onSettings: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => const SettingsDialog(),
-                );
-              },
-            ),
-            SizedBox(height: 30),
-            Text('SELECT LEVEL', style: TextStyle(
-                fontFamily: 'Pridi',
-                fontSize: 36,
-                color: Colors.white,
-                fontWeight: FontWeight.w500
-            ),),
-            const SizedBox(height: 15),
-            Image.asset(
-              'assets/tic.png',
-              width: 300,
-              height: 300,
-            ),
-            SizedBox(height: 80),
-            RoundedGradientButton(
-              text: 'VS',
-              leftIcon: const Icon(Icons.person,
-                  color: Color(0xFF2C004C), size: 30),
-              rightIcon: Image.asset('assets/bot.png', width: 30, height: 30),
-
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (
-                //       context) => const DifficultySelectionScreen()),
-                // );
-                _showDifficultyDialog(context);
-              },
-            ),
-            SizedBox(height: 15),
-            RoundedGradientButton(
-              text: 'VS',
-              leftIcon: const Icon(Icons.person,
-                  color: Color(0xFF2C004C), size: 30),
-              rightIcon: const Icon(Icons.person,
-                  color: Color(0xFF2C004C), size: 30),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const TicTacToeGame(isAI: false,difficulty: '',)),
-                );
-              },
-            ),
-
-            // RoundedGradientButton(
-            //   text: 'VS',
-            //   leftIcon: const Icon(Icons.person, color: Color(0xFF2C004C)),
-            //     rightIcon: Icon(Icons.person, color: Color(0xFF2C004C)),
-            //   onPressed: () {
-            //   showDialog(
-            //     context: context,
-            //     builder: (context) => PlayerNamesDialog(),
-            //   ).then((result) {
-            //     if (result != null) {
-            //       Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //           builder: (context) =>
-            //               TicTacToeGame(
-            //                 isAI: false,
-            //                 playerXName: result['x'],
-            //                 playerOName: result['o'],
-            //               ),
-            //         ),
-            //       );
-            //     }
-            //   });
-            // },
-            // )
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(height: 40),
+                CustomTopBar(
+                  // coins: 500,
+                  onBack: () => Navigator.pop(context),
+                  onSettings: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => const SettingsDialog(),
+                    );
+                  },
+                ),
+                SizedBox(height: 30),
+                Text(
+                  'SELECT LEVEL',
+                  style: TextStyle(
+                    fontFamily: 'Pridi',
+                    fontSize: 36,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(height: 15),
+                Image.asset(
+                  'assets/tic.png',
+                  width: 300,
+                  height: 300,
+                ),
+                SizedBox(height: 80),
+                RoundedGradientButton(
+                  text: 'VS',
+                  leftIcon: Icon(Icons.person,
+                      color: const Color(0xFF2C004C), size: 30),
+                  rightIcon: Image.asset('assets/bot.png',
+                      width: 30, height: 30),
+                  onPressed: () {
+                    _showDifficultyDialog(context);
+                  },
+                ),
+                SizedBox(height: 15),
+                RoundedGradientButton(
+                  text: 'VS',
+                  leftIcon: Icon(Icons.person,
+                      color: const Color(0xFF2C004C), size: 30),
+                  rightIcon: Icon(Icons.person,
+                      color: const Color(0xFF2C004C), size: 30),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                        const TicTacToeGame(isAI: false, difficulty: ''),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -288,6 +515,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
     );
   }
 }
+
 
 
 // import 'package:flutter/material.dart';

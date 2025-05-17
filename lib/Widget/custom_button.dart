@@ -57,9 +57,60 @@ class RoundedGradientButton extends StatelessWidget {
     );
   }
 
+  // List<Widget> _buildContent() {
+  //   if (leftIcon != null && rightIcon != null && text != null) {
+  //     // Two icons and a label in between (e.g., "vs")
+  //     return [
+  //       leftIcon!,
+  //       const SizedBox(width: 12),
+  //       Text(
+  //         text!,
+  //         style: const TextStyle(
+  //           color: Color(0xFF2C004C),
+  //           fontSize: 20,
+  //           fontFamily: 'Pridi',
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //       const SizedBox(width: 12),
+  //       rightIcon!,
+  //     ];
+  //   } else if (leftIcon != null && text != null) {
+  //     // One icon and label (e.g., "Play ▶️")
+  //     return [
+  //       Text(
+  //         text!,
+  //         style: const TextStyle(
+  //           color: Color(0xFF2C004C),
+  //           fontSize: 20,
+  //           fontFamily: 'Pridi',
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //       // const SizedBox(width: 8),
+  //       Padding(
+  //         padding: const EdgeInsets.only(top: 3.0),
+  //         child: leftIcon!,
+  //       ),
+  //     ];
+  //   } else {
+  //     // Fallback (only text or something wrong)
+  //     return [
+  //       Text(
+  //         text ?? '',
+  //         style: const TextStyle(
+  //           color: Color(0xFF2C004C),
+  //           fontSize: 20,
+  //           fontFamily: 'Pridi',
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //     ];
+  //   }
+  // }
   List<Widget> _buildContent() {
     if (leftIcon != null && rightIcon != null && text != null) {
-      // Two icons and a label in between (e.g., "vs")
+      // Two icons and a label in between
       return [
         leftIcon!,
         const SizedBox(width: 12),
@@ -76,8 +127,9 @@ class RoundedGradientButton extends StatelessWidget {
         rightIcon!,
       ];
     } else if (leftIcon != null && text != null) {
-      // One icon and label (e.g., "Play ▶️")
+      // Left icon and label
       return [
+
         Text(
           text!,
           style: const TextStyle(
@@ -87,14 +139,33 @@ class RoundedGradientButton extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        // const SizedBox(width: 8),
         Padding(
-          padding: const EdgeInsets.only(top: 3.0),
+          padding: const EdgeInsets.only(right: 8.0),
           child: leftIcon!,
         ),
       ];
+    } else if (rightIcon != null && text != null) {
+      // Right icon and label
+      return [
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: rightIcon!,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          text!,
+          style: const TextStyle(
+            color: Color(0xFF2C004C),
+            fontSize: 20,
+            fontFamily: 'Pridi',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+
+      ];
     } else {
-      // Fallback (only text or something wrong)
+      // Fallback
       return [
         Text(
           text ?? '',
@@ -108,6 +179,7 @@ class RoundedGradientButton extends StatelessWidget {
       ];
     }
   }
+
 }
 
 
