@@ -39,7 +39,10 @@ dependencies:
   confetti: ^0.7.0
   rename_app: ^1.6.3
   intl: ^0.18.1
-  fluttertoast:
+#  fluttertoast:
+
+  package_info_plus: ^8.0.2
+  fluttertoast: ^8.2.1
   phonepe_payment_sdk: ^2.0.2
   crypto: ^3.0.3
   http: ^1.1.0
@@ -47,6 +50,7 @@ dependencies:
   shared_preferences: ^2.2.1
   flutter_screenutil: ^5.9.3
   flutter_launcher_icons: ^0.14.3
+
 
 dev_dependencies:
   flutter_test:

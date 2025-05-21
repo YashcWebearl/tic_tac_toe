@@ -14,6 +14,7 @@ class CustomTopBar extends StatefulWidget {
   final VoidCallback onSettings;
   final bool isGame; // NEW
   final bool isWinner;
+  final GlobalKey? coinKey;
 
   const CustomTopBar({
     super.key,
@@ -22,6 +23,7 @@ class CustomTopBar extends StatefulWidget {
     required this.onSettings,
     this.isGame = false,
     this.isWinner = false,
+    this.coinKey,
   });
 
   @override
@@ -128,6 +130,7 @@ class _CustomTopBarState extends State<CustomTopBar> {
 
           // Coins Display
           Container(
+            key: widget.coinKey,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               gradient: const LinearGradient(

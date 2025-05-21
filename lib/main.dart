@@ -102,16 +102,20 @@ class _MyAppState extends State<MyApp> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          // home: isLoggedIn == null
-          //     ? const Scaffold(
-          //   body: Center(child: CircularProgressIndicator()),
-          // )
-          //     : isLoggedIn!
-          //     ?  StartScreen()
-          //     :  WelcomeScreen()
-          home: const SplashScreen(),
+        return SafeArea(
+          bottom: true,
+          top: false,
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            // home: isLoggedIn == null
+            //     ? const Scaffold(
+            //   body: Center(child: CircularProgressIndicator()),
+            // )
+            //     : isLoggedIn!
+            //     ?  StartScreen()
+            //     :  WelcomeScreen()
+            home: const SplashScreen(),
+          ),
         );
       },
     );

@@ -96,23 +96,23 @@ class AudioHelper {
     }
   }
 
+  // void playMakeMove() async {
+  //   if (_isSoundOn && _makeMove != null) {
+  //     await _soLoud.play(_makeMove!);
+  //   }
+  // }
   void playMakeMove() async {
     if (_isSoundOn && _makeMove != null) {
-      await _soLoud.play(_makeMove!);
+      _playingBackground = await _soLoud.play(_makeMove!);
+      _soLoud.setProtectVoice(_playingBackground!, true);
     }
   }
-  // void playBackgroundMusic() async {
-  //   if (_isSoundOn && _makeMove != null) {
-  //     _playingBackground = await _soLoud.play(_makeMove!);
-  //     _soLoud.setProtectVoice(_playingBackground!, true);
-  //   }
-  // }
-  //
-  // Future<void> stopBackgroundMusic() async {
-  //   if (_playingBackground != null) {
-  //     _soLoud.fadeVolume(_playingBackground!, 0.0, const Duration(milliseconds: 500));
-  //   }
-  // }
+
+  Future<void> stopBackgroundMusic() async {
+    if (_playingBackground != null) {
+      _soLoud.fadeVolume(_playingBackground!, 0.0, const Duration(milliseconds: 500));
+    }
+  }
 
   void dispose() {
     _soLoud.deinit();
@@ -150,7 +150,7 @@ class AudioHelper {
 //       await _soLoud.init();
 //
 //       // Load assets from the music folder
-//       _makeMove = await _soLoud.loadAsset('assets/music/Xplace.mp3');
+//       _makeMove = await _soLoud.loadAsset('assets/music/Xplace2.mp3');
 //       _buttonClick = await _soLoud.loadAsset('assets/music/button_click.mp3');
 //       _lose = await _soLoud.loadAsset('assets/music/Lose.mp3');
 //       _money = await _soLoud.loadAsset('assets/music/Money.mp3');

@@ -199,6 +199,8 @@
 //     );
 //   }
 // }
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -221,6 +223,8 @@ final GoogleSignIn _googleSignIn = GoogleSignIn(
 );
 
 class SignInDemo extends StatefulWidget {
+  final bool isRegistration;
+  const SignInDemo({Key? key, this.isRegistration = false}) : super(key: key);
   @override
   _SignInDemoState createState() => _SignInDemoState();
 }
@@ -362,64 +366,115 @@ class _SignInDemoState extends State<SignInDemo> {
   //     print('Sign in failed: $error');
   //   }
   // }
+
   Future<void> _handleSignIn() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
+      print('work:-');
       final account = await _googleSignIn.signIn();
 
       if (account != null) {
         setState(() {
           _currentUser = account;
         });
+        print('work111111111111111:-');
 
-        print('User signed in: ${account.displayName}, email: ${account.email}');
+        final email = account.email;
+        print('email is:- ${account.email}');
 
-        final uri = Uri.parse('$LURL/api/game/google');
+        if (widget.isRegistration) {
+          // ➤ REGISTRATION FLOW
+          final uri = Uri.parse('$LURL/api/user/google');
+          print('work22222222222222222:-');
+          final response = await http.post(
+            uri,
+            headers: {
+              'Content-Type': 'application/json',
+            },
 
-        final response = await http.post(
-          uri,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode({
-            'registeredID': account.id,
-            'email': account.email,
-            'userName': account.displayName ?? 'User',
-            'photo': account.photoUrl ?? '',
-          }),
-        );
+            body: jsonEncode({
+              'registeredID': account.id,
+              'email': email,
+              'gameName': "XOXO",
+              'userName': account.displayName ?? 'User',
+              'photo': account.photoUrl ?? '',
+            }),
+          );
+          print('response status code:-${response.statusCode}');
+          print('response body :-${response.body}');
+          if (response.statusCode == 200) {
+            final jsonResponse = jsonDecode(response.body);
+            print('work3333333333333:-');
+            final token = jsonResponse['token'];
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('auth_token', token);
+            await prefs.setString('email', email);
 
-        print('status code:-${response.statusCode}');
-        print('response body:-${response.body}');
-
-        if (response.statusCode == 200) {
-          final jsonResponse = jsonDecode(response.body);
-
-          // Save token
-          final token = jsonResponse['token'];
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('auth_token', token);
-          print('Token saved to shared preferences');
-
-          setState(() {
-            _loginResponse = LoginResponse.fromJson(jsonResponse);
-          });
-
-          // Navigate to StartScreen after sign in
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) =>  StartScreen(coinadd: true,)),
+            setState(() {
+              _loginResponse = LoginResponse.fromJson(jsonResponse);
+            });
+            print('work444444444444:-');
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => StartScreen(coinadd: true)),
+              );
+            });
+          } else if (response.statusCode == 409) {
+            print('work555555555555555555:-');
+            final errorMessage = jsonDecode(response.body)['message'] ?? 'User already registered.';
+            Fluttertoast.showToast(
+              msg: errorMessage,
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.redAccent,
+              textColor: Colors.white,
+              fontSize: 16.0,
             );
-          });
-        }
-        else {
-          print('API error: ${response.statusCode}, ${response.body}');
+          } else {
+            print('work66666666666666:-');
+            print('API error: ${response.statusCode}, ${response.body}');
+          }
+        } else {
+          // ➤ LOGIN FLOW
+          print('work7777777777777777:-');
+          final uri = Uri.parse('$LURL/api/user/login');
+          final response = await http.post(
+            uri,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'email': email}),
+          );
+          print('response status code login:-${response.statusCode}');
+          print('response body login:-${response.body}');
+          if (response.statusCode == 200) {
+            final json = jsonDecode(response.body);
+            final token = json['token'];
+            print('work888888888888888:-');
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('auth_token', token);
+            await prefs.setString('email', email);
+
+            print('token login:- $token');
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const StartScreen()),
+              );
+            });
+          } else {
+            print('work999999999999:-');
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: const Text("Login failed. Try again."),
+            ));
+          }
         }
       }
+    } on PlatformException catch (e) {
+      print('Google sign-in error: ${e.code}, ${e.message}, ${e.details}');
     } catch (error) {
       print('Sign in failed: $error');
     } finally {
@@ -428,6 +483,101 @@ class _SignInDemoState extends State<SignInDemo> {
       });
     }
   }
+
+
+
+
+  // Future<void> _handleSignIn() async {
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
+  //
+  //   try {
+  //     final account = await _googleSignIn.signIn();
+  //     print('data of goodle:-$account');
+  //     print('data of goodle:-${account.toString()}');
+  //     print('data of goodle:-${account!.id}');
+  //     print('data of goodle:-${account!.displayName}');
+  //
+  //
+  //     if (account != null) {
+  //       setState(() {
+  //         _currentUser = account;
+  //       });
+  //
+  //       print('User signed in: ${account.displayName}, email: ${account.email}');
+  //
+  //       final uri = Uri.parse('$LURL/api/user/google');
+  //
+  //       final response = await http.post(
+  //         uri,
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: jsonEncode({
+  //           'registeredID': account.id,
+  //           'email': account.email,
+  //           'gameName':"XOXO",
+  //           'userName': account.displayName ?? 'User',
+  //           'photo': account.photoUrl ?? '',
+  //         }),
+  //       );
+  //
+  //       print('status code:-${response.statusCode}');
+  //       print('response body:-${response.body}');
+  //
+  //       if (response.statusCode == 200) {
+  //         final jsonResponse = jsonDecode(response.body);
+  //
+  //         // Save token
+  //         final token = jsonResponse['token'];
+  //         final prefs = await SharedPreferences.getInstance();
+  //         await prefs.setString('auth_token', token);
+  //         print('Token saved to shared preferences');
+  //
+  //         setState(() {
+  //           _loginResponse = LoginResponse.fromJson(jsonResponse);
+  //         });
+  //
+  //         // Navigate to StartScreen after sign in
+  //         WidgetsBinding.instance.addPostFrameCallback((_) {
+  //           Navigator.pushReplacement(
+  //             context,
+  //             MaterialPageRoute(builder: (context) =>  StartScreen(coinadd: true,)),
+  //           );
+  //         });
+  //       }
+  //       else if(response.statusCode == 409){
+  //         final errorMessage = jsonDecode(response.body)['message'] ?? 'User already registered.';
+  //
+  //         // ScaffoldMessenger.of(context).showSnackBar(
+  //         //   SnackBar(
+  //         //     content: Text(errorMessage),
+  //         //     backgroundColor: Colors.redAccent,
+  //         //     behavior: SnackBarBehavior.floating,
+  //         //   ),
+  //         // );
+  //         Fluttertoast.showToast(
+  //           msg: errorMessage,
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.BOTTOM,
+  //           backgroundColor: Colors.redAccent,
+  //           textColor: Colors.white,
+  //           fontSize: 16.0,
+  //         );
+  //       }
+  //       else {
+  //         print('API error: ${response.statusCode}, ${response.body}');
+  //       }
+  //     }
+  //   } catch (error) {
+  //     print('Sign in failed: $error');
+  //   } finally {
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //   }
+  // }
 
   Future<void> _handleSignOut() async {
     await _googleSignIn.disconnect();
@@ -454,27 +604,13 @@ class _SignInDemoState extends State<SignInDemo> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   title: Text(
-      //     "Google Sign-In",
-      //     style: TextStyle(
-      //       fontFamily: 'Pridi',
-      //       fontWeight: FontWeight.w500,
-      //       fontSize: 24,
-      //       color: Colors.white,
-      //     ),
-      //   ),
-      //   centerTitle: true,
-      // ),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
 
         centerTitle: true,
         title: Text(
-          'Login',
+          widget.isRegistration == true ?'Registration':'Login',
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -540,7 +676,7 @@ class _SignInDemoState extends State<SignInDemo> {
           )
               : RoundedGradientButton(
             width: 280,
-            text: 'Sign in with Google',
+            text: widget.isRegistration ?'Sign up with Google' : 'Sign in with Google',
             rightIcon: Image.asset(
               'assets/google_logo.png',
               width: 24,

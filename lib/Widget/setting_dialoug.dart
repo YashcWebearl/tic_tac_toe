@@ -281,7 +281,23 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       width: 60,
                       height: 60,
                     ),
+                    // CustomIconButton(
+                    //   onTap: () {
+                    //     Navigator.of(context).pop(); // Close settings dialog
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //           builder: (context) =>  UpgradeScreen()),
+                    //     );
+                    //   }, // For vibration toggle (optional)
+                    //   iconWidget: Icon(Icons.vibration, size: 35, color: Colors.black),
+                    //   width: 60,
+                    //   height: 60,
+                    // ),
                     CustomIconButton(
+                      width: 60,
+                        height: 60,
+                      // text: 'Upgrade',
                       onTap: () {
                         Navigator.of(context).pop(); // Close settings dialog
                         Navigator.push(
@@ -289,10 +305,31 @@ class _SettingsDialogState extends State<SettingsDialog> {
                           MaterialPageRoute(
                               builder: (context) =>  UpgradeScreen()),
                         );
-                      }, // For vibration toggle (optional)
-                      iconWidget: Icon(Icons.vibration, size: 35, color: Colors.black),
-                      width: 60,
-                      height: 60,
+                      },
+                      iconWidget: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: const BoxDecoration(color: Colors.transparent),
+                        child: Center(
+                          child: Container(
+                            width: 40,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color(0xFF2C004C),
+                                width: 2.5,
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.arrow_upward,
+                              color: const Color(0xFF2C004C),
+                              size: 28,
+                            ),
+                          ),
+                        ),
+                      ),
+
                     ),
                   ],
                 ),

@@ -403,11 +403,11 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                         onPressed: () {
                           String difficulty;
                           if (_sliderValue == 0) {
-                            difficulty = 'Easy';
+                            difficulty = 'EASY';
                           } else if (_sliderValue == 1) {
-                            difficulty = 'Medium';
+                            difficulty = 'MEDIUM';
                           } else {
-                            difficulty = 'Hard';
+                            difficulty = 'HARD';
                           }
                           Navigator.pop(context);
                           Navigator.push(

@@ -17,13 +17,13 @@ class WelcomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Image.asset(
+            //   'assets/tic_tac_toe.png',
+            //   width: 300,
+            //   height: 100,
+            // ),
             Image.asset(
-              'assets/tic_tac_toe.png',
-              width: 300,
-              height: 100,
-            ),
-            Image.asset(
-              'assets/tic.png',
+              'assets/XOXO.png',
               width: 300,
               height: 300,
             ),
@@ -35,7 +35,7 @@ class WelcomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignInDemo()),
+                  MaterialPageRoute(builder: (context) => SignInDemo(isRegistration:true)),
                 );
               },
             ),
@@ -47,7 +47,7 @@ class WelcomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  MaterialPageRoute(builder: (context) =>  SignInDemo(isRegistration: false,)),
                 );
               },
             ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import '../Widget/bg_container.dart';
+import '../Widget/sound.dart';
 import '../Widget/upgrade_card.dart';
 
 class UpgradeScreen extends StatefulWidget {
@@ -165,24 +166,36 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
       body: BackgroundContainer(
         child: Column(
           children: [
-            const SizedBox(height: 40),
+            const SizedBox(height: 60),
             // Top-right cancel icon
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context); // Pops back to StartScreen
-                  },
-                  child: const Icon(
-                    Icons.close,
-                    size: 28,
-                    color: Colors.white,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding:  EdgeInsets.symmetric(horizontal: 20.0),
+                  child: _buildRoundedIcon(
+                    icon: Icons.arrow_back_ios_new_rounded,
+                    onTap: () => Navigator.pop(context),
                   ),
                 ),
-              ),
+              ],
             ),
+            // Padding(
+            //   padding: const EdgeInsets.only(right: 16),
+            //   child: Align(
+            //     alignment: Alignment.topRight,
+            //     child: GestureDetector(
+            //       onTap: () {
+            //         Navigator.pop(context); // Pops back to StartScreen
+            //       },
+            //       child: const Icon(
+            //         Icons.close,
+            //         size: 28,
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //   ),
+            // ),
             const SizedBox(height: 50),
             Expanded(
               child: ListView(
@@ -211,6 +224,31 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+  Widget _buildRoundedIcon({required IconData icon, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: () {
+        AudioHelper().playButtonClick();
+        onTap();
+      },
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: const Color(0xFF400CB9),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white, width: 1),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Icon(icon, color: Colors.white),
       ),
     );
   }

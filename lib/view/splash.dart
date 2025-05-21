@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tic_tac_toe/Widget/bg_container.dart';
 import 'package:tic_tac_toe/view/start_screen.dart';
@@ -24,16 +25,22 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _checkAppCode();
   }
-
+  Future<String> getAppCode() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.buildNumber; // This fetches versionCode from build.gradle
+  }
   Future<void> _checkAppCode() async {
     try {
-      final response = await http.get(Uri.parse('$LURL/api/game/slash'));
+      String _bAppCode = await getAppCode();
+      print('app code is from build:-$_bAppCode');
+      final response = await http.get(Uri.parse('$LURL/api/user/slash'));
       print('call api');
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         final String appCode = jsonData['data']['app_code'] ?? "0";
         print('call api 11111111111111111');
-        if (appCode == "1") {
+        print('current app code is:- $_bAppCode');
+        if (appCode == _bAppCode) {
           print('app code is :- $appCode');
           _navigateToNext();
         } else {
@@ -156,9 +163,20 @@ class _SplashScreenState extends State<SplashScreen> {
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset('assets/tic_tac_toe.png', width: 300, height: 100),
-                SizedBox(height: 30.h),
-                Image.asset('assets/tic.png', width: 300, height: 300),
+                // Image.asset('assets/tic_tac_toe.png', width: 300, height: 100),
+                // SizedBox(height: 30.h),
+                Image.asset(
+                  'assets/XOXO.png',
+                  width: 300.w,
+                  height: 300.h,
+                ),
+                // SizedBox(height: 30.h),
+                // Image.asset(
+                //   'assets/XverseO.png',
+                //   width: 300.w,
+                //   height: 50.h,
+                // ),
+                // Image.asset('assets/tic.png', width: 300, height: 300),
               ],
             ),
             Padding(
@@ -167,12 +185,20 @@ class _SplashScreenState extends State<SplashScreen> {
                 "WebEarl Technologies Pvt Ltd",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white70,
+                  fontSize: 20,
+                  color: Color(0xff0180d6),
                   fontWeight: FontWeight.w500,
+                  shadows: [
+                    Shadow(
+                      offset: Offset(1, 1),
+                      blurRadius: 3.0,
+                      color: Colors.white, // White shadow
+                    ),
+                  ],
                 ),
               ),
             ),
+
           ],
         ),
       ),

@@ -22,7 +22,7 @@ class TicTacToeGame extends StatefulWidget {
   const TicTacToeGame({
     super.key,
     this.isAI = false,
-    this.difficulty = 'easy',
+    this.difficulty = 'EASY',
     this.playerXName = 'Player 1',
     this.playerOName = 'Player 2',
   });
@@ -162,7 +162,14 @@ class _TicTacToeGameState extends State<TicTacToeGame>
       },
     );
   }
-
+  void _addCoins() async {
+    try {
+      await CoinService.addCoins(coins: 5);
+      print("Coins successfully added.");
+    } catch (e) {
+      print("Error adding coins: $e");
+    }
+  }
   Future<void> _loadPlayerNames() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -224,7 +231,8 @@ class _TicTacToeGameState extends State<TicTacToeGame>
                             context,
                             MaterialPageRoute(
                               builder: (context) => AdPlaybackPage(
-                                onAdComplete: _undoMove,
+                                // onAdComplete: _undoMove,
+                                onAdComplete: _addCoins,
                               ),
                             ),
                           );
@@ -242,7 +250,7 @@ class _TicTacToeGameState extends State<TicTacToeGame>
                           Navigator.pop(context);
                           _undoMove();
                         },
-                        label: "1",
+                        label: "20",
                         labelColor: Colors.white,
                         iconWidget: Image.asset("assets/coin.png", height: 28),
                       ),
@@ -334,9 +342,9 @@ class _TicTacToeGameState extends State<TicTacToeGame>
   // }
   void _makeAIMove() {
     if (gameOver) return;
-    var move = widget.difficulty == 'Easy'
+    var move = widget.difficulty == 'EASY'
         ? _randomMove()
-        : widget.difficulty == 'Medium'
+        : widget.difficulty == 'MEDIUM'
         ? _mediumMove()
         : _hardMove();
     if (move != null) {
@@ -852,21 +860,21 @@ class _TicTacToeGameState extends State<TicTacToeGame>
                   ),
                   // Add this Positioned widget for difficulty display
                   Positioned(
-                    top: -37,
-                    // left: 5,
-                    // right: 5,
+                    top: -25,
+                    // left: -1,
+                    right: 45,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(width:widget.difficulty == 'Medium' ?110 : 125), // Spacer for first cell
-                        Container(width:widget.difficulty == 'Medium' ?115 : 125), // Spacer for second cell
+                        Container(width:widget.difficulty == 'MEDIUM' ?110 : 125), // Spacer for first cell
+                        Container(width:widget.difficulty == 'MEDIUM' ?115 : 125), // Spacer for second cell
                         if(widget.difficulty != '')
                           // const SizedBox(width: 112), // Spacer for third cell
                         Container(
-                          padding: const EdgeInsets.only(bottom: 5,left: 10,right: 10),
+                          padding: const EdgeInsets.only(bottom: 0,left: 10,right: 10,top: 0),
                           decoration: BoxDecoration(
                             color: const Color(0xFF400CB9),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(6),
                             border: Border.all(color: Colors.white, width: 1),
                             boxShadow: const [
                               BoxShadow(
@@ -879,7 +887,7 @@ class _TicTacToeGameState extends State<TicTacToeGame>
                           child: Text(
                             widget.difficulty,
                             style: const TextStyle(
-                              fontSize: 20,
+                              fontSize: 14,
                               fontFamily: 'Pridi',
                               fontWeight: FontWeight.w500,
                               color: Colors.white,
@@ -923,9 +931,11 @@ class _TicTacToeGameState extends State<TicTacToeGame>
               //   ],
               // ),
               const SizedBox(height: 60),
-              if (!gameOver &&
-                  (widget.isAI ? currentPlayer == 'X' : true) &&
-                  moveHistory.isNotEmpty)
+
+              // if (!gameOver &&
+              //     (widget.isAI ? currentPlayer == 'X' : true) &&
+              //     moveHistory.isNotEmpty)
+              if (widget.isAI && !gameOver && currentPlayer == 'X' && moveHistory.isNotEmpty)
                 CustomIconButton(
                   onTap: _showUndoDialog,
                   width: 110,

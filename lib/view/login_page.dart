@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = true);
 
-    final uri = Uri.parse('$LURL/api/game/login');
+    final uri = Uri.parse('$LURL/api/user/login');
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json'},

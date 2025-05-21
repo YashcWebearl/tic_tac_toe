@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+
+import '../Widget/coin_add_service.dart';
 class AdPlaybackPage extends StatefulWidget {
   final VoidCallback onAdComplete;
 
@@ -40,58 +42,66 @@ class _AdPlaybackPageState extends State<AdPlaybackPage> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
 
     print('ad_show.dart');
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFA949F2), Color(0xFF3304B3)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+    return WillPopScope(
+      onWillPop: () async {
+        // Disable back until ad is done
+        return _showCancelIcon; // false = block back, true = allow
+      },
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFFA949F2), Color(0xFF3304B3)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        child: Stack(
-          children: [
-            Center(
-              child: Image.asset(
-                'assets/SkipAd.png',
-                fit: BoxFit.contain,
-              ),
-            ),
-            Positioned(
-              top: 40,
-              right: 20,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: _showCancelIcon
-                    ? GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Icon(
-                    Icons.close,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                )
-                    : Text(
-                  '$_remainingSeconds',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+          child: Stack(
+            children: [
+              Center(
+                child: Image.asset(
+                  'assets/SkipAd.png',
+                  fit: BoxFit.contain,
                 ),
               ),
-            ),
-          ],
+              Positioned(
+                top: 40,
+                right: 20,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: _showCancelIcon
+                      ? GestureDetector(
+                    onTap: () {
+                      // _addCoins();
+                      Navigator.pop(context);
+                    },
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  )
+                      : Text(
+                    '$_remainingSeconds',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

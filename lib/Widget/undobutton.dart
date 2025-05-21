@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/Widget/sound.dart';
 
 class CustomIconButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -34,7 +35,10 @@ class CustomIconButton extends StatelessWidget {
             : const SizedBox()); // fallback if nothing is provided
 
     return GestureDetector(
-      onTap: onTap,
+      onTap:(){
+        AudioHelper().playButtonClick();
+        onTap();
+      } ,
       child: Container(
         width: width,
         height: height,
