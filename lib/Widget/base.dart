@@ -1,1 +1,0 @@
-var LURL = "https://game-6g0j.onrender.com";
