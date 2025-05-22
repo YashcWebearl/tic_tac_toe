@@ -5,8 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import '../Widget/bg_container.dart';
+import '../Widget/coin_add_service.dart';
+import '../Widget/coin_noti.dart';
+import '../Widget/custom_appbar.dart';
+import '../Widget/display_coin.dart';
 import '../Widget/sound.dart';
 import '../Widget/upgrade_card.dart';
+import '../Widget/upgrade_dialouge.dart';
 
 class UpgradeScreen extends StatefulWidget {
   const UpgradeScreen({super.key});
@@ -42,7 +47,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
       "merchantId": merchantId,
       "merchantTransactionId": transactionId,
       "merchantUserId": "MUID123",
-      "amount": 1 * 100, // Convert to paise
+      "amount": 200 * 100, // Convert to paise
       "callbackUrl": callBackUrl,
       "mobileNumber": "9999999999",
       "paymentInstrument": {
@@ -168,18 +173,73 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
           children: [
             const SizedBox(height: 60),
             // Top-right cancel icon
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:  EdgeInsets.symmetric(horizontal: 20.0),
-                  child: _buildRoundedIcon(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildRoundedIcon(
                     icon: Icons.arrow_back_ios_new_rounded,
                     onTap: () => Navigator.pop(context),
                   ),
-                ),
-              ],
+                  SizedBox(width: 8),
+                  Text(
+                    'Upgrade',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  // Container(
+                  //   // key: widget.coinKey,
+                  //   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  //   decoration: BoxDecoration(
+                  //     gradient: const LinearGradient(
+                  //       colors: [Color(0xFF56D8FF), Color(0xFF2E9AFF)],
+                  //       begin: Alignment.topCenter,
+                  //       end: Alignment.bottomCenter,
+                  //     ),
+                  //     borderRadius: BorderRadius.circular(40),
+                  //   ),
+                  //   child: Row(
+                  //     crossAxisAlignment: CrossAxisAlignment.center,
+                  //     children: [
+                  //       Padding(
+                  //         padding: const EdgeInsets.only(top: 3.0),
+                  //         child: Image.asset(
+                  //           'assets/coin.png', // Replace with your coin asset
+                  //           width: 25,
+                  //           height: 25,
+                  //         ),
+                  //       ),
+                  //       const SizedBox(width: 5),
+                  //       ValueListenableBuilder<int>(
+                  //           valueListenable: CoinNotifier.coins,
+                  //           builder: (context, coinsValue, child) {
+                  //             return Text(
+                  //               '$coinsValue',
+                  //               style: const TextStyle(
+                  //                 fontSize: 20,
+                  //                 fontWeight: FontWeight.bold,
+                  //                 color: Color(0xFF2C004C),
+                  //               ),
+                  //             );
+                  //           }
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  CoinDisplay(),
+
+                  // Add an empty SizedBox to balance the left icon
+                  // SizedBox(width: 40), // Match width of left Padding + Icon
+                ],
+              ),
             ),
+
+
+
             // Padding(
             //   padding: const EdgeInsets.only(right: 16),
             //   child: Align(
@@ -196,7 +256,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
             //     ),
             //   ),
             // ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 20),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -208,12 +268,43 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                     isFree: true,
                   ),
                   GestureDetector(
-                    onTap: (){
-                      startPgTransaction();
+                    // onTap: (){
+                    //   startPgTransaction();
+                    // },
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => UpgradeOptionDialog(
+                          onDollarTap: () {
+                            // Use PhonePe payment
+                            startPgTransaction();
+                          },
+                            onCoinTap: () async {
+                              final currentCoins = CoinNotifier.coins.value;
+
+                              if (currentCoins >= 1000) {
+                                try {
+                                  await CoinService.undoCoins(coins: 1000);
+                                  Fluttertoast.showToast(msg: "Upgrade purchased");
+                                } catch (e) {
+                                  Fluttertoast.showToast(msg: "Failed to upgrade: ${e.toString()}");
+                                }
+                              } else {
+                                Fluttertoast.showToast(msg: "You Need More Coins");
+                              }
+                            }
+
+                          // onCoinTap: () async {
+                          //   // Deduct coins logic here
+                          //   await CoinService.undoCoins(coins: 1000);
+                          //   Fluttertoast.showToast(msg: "Upgrade puchase");
+                          // },
+                        ),
+                      );
                     },
                     child: PackageCard(
                       title: "Prime Package",
-                      price: "\$22",
+                      price: "1000",
                       imagePath: "assets/preimium.png",
                       isFree: false,
                       isPrime: true,

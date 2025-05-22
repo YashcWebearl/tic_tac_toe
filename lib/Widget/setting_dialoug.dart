@@ -259,7 +259,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               children: [
                 const SizedBox(height: 10),
                 const Text(
-                  'SETTING',
+                  'SETTINGS',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 22,
@@ -415,7 +415,10 @@ class _SettingsDialogState extends State<SettingsDialog> {
               right: 0,
               top: 0,
               child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () {
+                  AudioHelper().playButtonClick();
+                  Navigator.of(context).pop();
+                },
                 child: const Icon(Icons.close, color: Colors.white, size: 28),
               ),
             ),

@@ -299,7 +299,7 @@ class _SignInDemoState extends State<SignInDemo> {
         _currentUser = account;
       });
     });
-    _googleSignIn.signInSilently(); // auto sign-in
+    // _googleSignIn.signInSilently(); // auto sign-in
   }
 
   // Future<void> _handleSignIn() async {
@@ -374,6 +374,8 @@ class _SignInDemoState extends State<SignInDemo> {
 
     try {
       print('work:-');
+      await _googleSignIn.signOut();
+      print('work0000000000000:-');
       final account = await _googleSignIn.signIn();
 
       if (account != null) {
@@ -426,14 +428,15 @@ class _SignInDemoState extends State<SignInDemo> {
           } else if (response.statusCode == 409) {
             print('work555555555555555555:-');
             final errorMessage = jsonDecode(response.body)['message'] ?? 'User already registered.';
-            Fluttertoast.showToast(
-              msg: errorMessage,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.redAccent,
-              textColor: Colors.white,
-              fontSize: 16.0,
-            );
+            // Fluttertoast.showToast(
+            //   msg: errorMessage,
+            //   toastLength: Toast.LENGTH_SHORT,
+            //   gravity: ToastGravity.BOTTOM,
+            //   backgroundColor: Colors.redAccent,
+            //   textColor: Colors.white,
+            //   fontSize: 16.0,
+            // );
+            Fluttertoast.showToast(msg: errorMessage);
           } else {
             print('work66666666666666:-');
             print('API error: ${response.statusCode}, ${response.body}');
@@ -467,9 +470,10 @@ class _SignInDemoState extends State<SignInDemo> {
             });
           } else {
             print('work999999999999:-');
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: const Text("Login failed. Try again."),
-            ));
+            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            //   content: const Text("Login failed. Try again."),
+            // ));
+            Fluttertoast.showToast(msg: "Login failed. Try again.");
           }
         }
       }
@@ -598,92 +602,233 @@ class _SignInDemoState extends State<SignInDemo> {
     }
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   ScreenUtil.init(context);
+  //
+  //   return Scaffold(
+  //     extendBodyBehindAppBar: true,
+  //     // appBar: AppBar(
+  //     //   backgroundColor: Colors.transparent,
+  //     //   automaticallyImplyLeading: false,
+  //     //
+  //     //   centerTitle: true,
+  //     //   title: Text(
+  //     //     widget.isRegistration == true ?'Registration':'Login',
+  //     //     style: const TextStyle(
+  //     //       fontSize: 20,
+  //     //       fontWeight: FontWeight.bold,
+  //     //       color: Colors.white,
+  //     //     ),
+  //     //   ),
+  //     //   leading: Padding(
+  //     //     padding:  EdgeInsets.all(8.0),
+  //     //     child: _buildRoundedIcon(
+  //     //       icon: Icons.arrow_back_ios_new_rounded,
+  //     //       onTap: () => Navigator.pop(context),
+  //     //     ),
+  //     //   ),
+  //     // ),
+  //     body: BackgroundContainer(
+  //       child: Column(
+  //         children: [
+  //           SizedBox(height: 40),
+  //          Container(
+  //         height: 80,
+  //         padding: const EdgeInsets.symmetric(horizontal: 20),
+  //         decoration: const BoxDecoration(
+  //           color: Colors.transparent,
+  //         ),
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             _buildRoundedIcon(
+  //               icon: Icons.arrow_back_ios_new_rounded,
+  //               onTap: (){
+  //                 AudioHelper().playButtonClick();
+  //                 Navigator.pop(context);
+  //               },
+  //             ),
+  //            Text(
+  //                  widget.isRegistration == true ?'Registration':'Login',
+  //                  style: const TextStyle(
+  //                    fontSize: 20,
+  //                    fontWeight: FontWeight.bold,
+  //                    color: Colors.white,
+  //                  ),
+  //                ),
+  //             SizedBox(width: 48),
+  //           ],
+  //         ),
+  //       ),
+  //           _isLoading
+  //               ? CircularProgressIndicator(
+  //             valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+  //           )
+  //
+  //               : _currentUser != null && _loginResponse != null
+  //               ? Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: [
+  //               CircleAvatar(
+  //                 backgroundImage: NetworkImage(_currentUser!.photoUrl ?? ''),
+  //                 radius: 50.r,
+  //               ),
+  //               SizedBox(height: 20.h),
+  //               Text(
+  //                 'Name: ${_currentUser!.displayName}',
+  //                 style: TextStyle(
+  //                   fontFamily: 'Pridi',
+  //                   fontWeight: FontWeight.w500,
+  //                   fontSize: 20,
+  //                   color: Colors.white,
+  //                 ),
+  //               ),
+  //               SizedBox(height: 8.h),
+  //               Text(
+  //                 'Email: ${_currentUser!.email}',
+  //                 style: TextStyle(
+  //                   fontFamily: 'Pridi',
+  //                   fontWeight: FontWeight.w400,
+  //                   fontSize: 16,
+  //                   color: Colors.white70,
+  //                 ),
+  //               ),
+  //               SizedBox(height: 30.h),
+  //               RoundedGradientButton(
+  //                 width: 240,
+  //                 text: 'Play with this ID',
+  //                 onPressed: _handlePlayWithId,
+  //               ),
+  //               SizedBox(height: 15.h),
+  //               RoundedGradientButton(
+  //                 width: 200,
+  //                 text: 'Sign Out',
+  //                 onPressed: _handleSignOut,
+  //               ),
+  //             ],
+  //           )
+  //               : RoundedGradientButton(
+  //             width: 300,
+  //             text: widget.isRegistration ?'Sign up with Google' : 'Sign in with Google',
+  //             rightIcon: Image.asset(
+  //               'assets/google_logo.png',
+  //               width: 24,
+  //               height: 24,
+  //             ),
+  //             onPressed: _handleSignIn,
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: false,
-
-        centerTitle: true,
-        title: Text(
-          widget.isRegistration == true ?'Registration':'Login',
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        leading: Padding(
-          padding:  EdgeInsets.all(8.0),
-          child: _buildRoundedIcon(
-            icon: Icons.arrow_back_ios_new_rounded,
-            onTap: () => Navigator.pop(context),
-          ),
-        ),
-      ),
       body: BackgroundContainer(
-        child: Center(
-          child: _isLoading
-              ? CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-          )
-
-              : _currentUser != null && _loginResponse != null
-              ? Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(_currentUser!.photoUrl ?? ''),
-                radius: 50.r,
+        child: Column(
+          children: [
+            SizedBox(height: 40),
+            Container(
+              height: 80,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: const BoxDecoration(
+                color: Colors.transparent,
               ),
-              SizedBox(height: 20.h),
-              Text(
-                'Name: ${_currentUser!.displayName}',
-                style: TextStyle(
-                  fontFamily: 'Pridi',
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: _buildRoundedIcon(
+                      icon: Icons.arrow_back_ios_new_rounded,
+                      onTap: () {
+                        AudioHelper().playButtonClick();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      widget.isRegistration ? 'Registration' : 'Login',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 8.h),
-              Text(
-                'Email: ${_currentUser!.email}',
-                style: TextStyle(
-                  fontFamily: 'Pridi',
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16,
-                  color: Colors.white70,
-                ),
-              ),
-              SizedBox(height: 30.h),
-              RoundedGradientButton(
-                width: 240,
-                text: 'Play with this ID',
-                onPressed: _handlePlayWithId,
-              ),
-              SizedBox(height: 15.h),
-              RoundedGradientButton(
-                width: 200,
-                text: 'Sign Out',
-                onPressed: _handleSignOut,
-              ),
-            ],
-          )
-              : RoundedGradientButton(
-            width: 280,
-            text: widget.isRegistration ?'Sign up with Google' : 'Sign in with Google',
-            rightIcon: Image.asset(
-              'assets/google_logo.png',
-              width: 24,
-              height: 24,
             ),
-            onPressed: _handleSignIn,
-          ),
+            Expanded(
+              child: Center(
+                child: _isLoading
+                    ? const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                )
+                    : _currentUser != null && _loginResponse != null
+                    ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircleAvatar(
+                      backgroundImage:
+                      NetworkImage(_currentUser!.photoUrl ?? ''),
+                      radius: 50.r,
+                    ),
+                    SizedBox(height: 20.h),
+                    Text(
+                      'Name: ${_currentUser!.displayName}',
+                      style: const TextStyle(
+                        fontFamily: 'Pridi',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Text(
+                      'Email: ${_currentUser!.email}',
+                      style: const TextStyle(
+                        fontFamily: 'Pridi',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    SizedBox(height: 30.h),
+                    RoundedGradientButton(
+                      width: 240,
+                      text: 'Play with this ID',
+                      onPressed: _handlePlayWithId,
+                    ),
+                    SizedBox(height: 15.h),
+                    RoundedGradientButton(
+                      width: 200,
+                      text: 'Sign Out',
+                      onPressed: _handleSignOut,
+                    ),
+                  ],
+                )
+                    : RoundedGradientButton(
+                  width: 300,
+                  text: widget.isRegistration
+                      ? 'Sign up with Google'
+                      : 'Sign in with Google',
+                  rightIcon: Image.asset(
+                    'assets/google_logo.png',
+                    width: 24,
+                    height: 24,
+                  ),
+                  onPressed: _handleSignIn,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

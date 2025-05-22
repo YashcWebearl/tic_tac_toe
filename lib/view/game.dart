@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tic_tac_toe/view/winner_page.dart';
 import '../Widget/bg_container.dart';
+import '../Widget/checkInternet.dart';
 import '../Widget/coin_add_service.dart';
+import '../Widget/coin_noti.dart';
 import '../Widget/custom_appbar.dart';
 import '../Widget/custom_button.dart';
 import '../Widget/setting_dialoug.dart';
@@ -53,6 +57,10 @@ class _TicTacToeGameState extends State<TicTacToeGame>
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
+
+    currentPlayer = 'X';
+
+
     _loadPlayCount();
     _animation = Tween<double>(begin: 0, end: 1).animate(_animationController!)
       ..addListener(() {
@@ -112,7 +120,7 @@ class _TicTacToeGameState extends State<TicTacToeGame>
                 const SizedBox(height: 20),
                 TextField(
                   controller: controller,
-                  maxLength: 10,
+                  maxLength: 6,
                   autofocus: true,
                   decoration: InputDecoration(
                     labelText: 'Name',
@@ -189,11 +197,13 @@ class _TicTacToeGameState extends State<TicTacToeGame>
       context: context,
       barrierDismissible: true,
       builder: (context) {
+        final currentCoins = CoinNotifier.coins.value;
+        print('current coins:- $currentCoins');
         return Dialog(
           backgroundColor: Colors.transparent,
           child: Container(
             width: 380,
-            height: 204,
+            height: 220,
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
@@ -211,9 +221,9 @@ class _TicTacToeGameState extends State<TicTacToeGame>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 15),
-                      const Text(
-                        "Are you sure to undo?",
-                        style: TextStyle(
+                      Text(
+                        currentCoins < 20 ? "not enough coin \n play add for undo " : "Are you sure want to undo?",
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -222,22 +232,57 @@ class _TicTacToeGameState extends State<TicTacToeGame>
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 15),
+                      // CustomIconButton(
+                      //   height: 45,
+                      //   spacebetweenIcon: 0,
+                      //   onTap: () {
+                      //     Navigator.pop(context);
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder: (context) => AdPlaybackPage(
+                      //           // onAdComplete: _undoMove,
+                      //           onAdComplete: _undoMove,
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      //   label: "Play Ad",
+                      //   labelColor: Colors.white,
+                      //   iconWidget: Image.asset("assets/Ad.png", height: 28),
+                      // ),
                       CustomIconButton(
                         height: 45,
                         spacebetweenIcon: 0,
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AdPlaybackPage(
-                                // onAdComplete: _undoMove,
-                                onAdComplete: _addCoins,
+                        onTap: () async {
+                          // var connectivityResults = await Connectivity().checkConnectivity();
+                          // print('connectivity result:- $connectivityResults');
+                          // if (!connectivityResults.contains(ConnectivityResult.none)) {
+                          //   Navigator.pop(context);
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) => AdPlaybackPage(
+                          //         onAdComplete: _undoMove,
+                          //       ),
+                          //     ),
+                          //   );
+                          // } else {
+                          //   Fluttertoast.showToast(msg: "You’re offline");
+                          // }
+                          checkInternetAndProceed(context, () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AdPlaybackPage(
+                                  onAdComplete: _undoMove,
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          });
                         },
-                        label: "Play ad",
+                        label: "Play Ad",
                         labelColor: Colors.white,
                         iconWidget: Image.asset("assets/Ad.png", height: 28),
                       ),
@@ -245,10 +290,36 @@ class _TicTacToeGameState extends State<TicTacToeGame>
                       CustomIconButton(
                         width: 150,
                         height: 40,
-                        onTap: () {
-                          AudioHelper().playMoneySound();
-                          Navigator.pop(context);
-                          _undoMove();
+                        // onTap: () {
+                        //   AudioHelper().playMoneySound();
+                        //   Navigator.pop(context);
+                        //   // _undoMove();
+                        //   _undoWithCoins();
+                        // },
+                        onTap: () async {
+                          // var connectivityResults = await Connectivity().checkConnectivity();
+                          // print('connectivity result:- $connectivityResults');
+                          // if (!connectivityResults.contains(ConnectivityResult.none)) {
+                          //   AudioHelper().playMoneySound();
+                          //     Navigator.pop(context);
+                          //   _undoWithCoins();
+                          // } else {
+                          //   Fluttertoast.showToast(msg: "You’re offline");
+                          // }
+                          checkInternetAndProceed(context, () {
+                            // Navigator.pop(context);
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => AdPlaybackPage(
+                            //       onAdComplete: _undoMove,
+                            //     ),
+                            //   ),
+                            // );
+                            AudioHelper().playMoneySound();
+                                Navigator.pop(context);
+                              _undoWithCoins();
+                          });
                         },
                         label: "20",
                         labelColor: Colors.white,
@@ -261,7 +332,10 @@ class _TicTacToeGameState extends State<TicTacToeGame>
                   top: 0,
                   right: 0,
                   child: GestureDetector(
-                    onTap: () => Navigator.pop(context),
+                    onTap: () {
+                      AudioHelper().playButtonClick();
+                      Navigator.pop(context);
+                    } ,
                     child: const Icon(Icons.close, color: Colors.white),
                   ),
                 ),
@@ -302,28 +376,53 @@ class _TicTacToeGameState extends State<TicTacToeGame>
   List<List<String>> _copyBoard() {
     return board.map((row) => List<String>.from(row)).toList();
   }
-  void _undoMove() async {
+  // void _undoMove(bool iscoin) async {
+  //   try {
+  //     // Call undo API
+  //     await CoinService.undoCoins(coins: 20);
+  //
+  //     // Proceed with local game logic
+  //     if (moveHistory.isNotEmpty) {
+  //       setState(() {
+  //         board = moveHistory.removeLast();
+  //         currentPlayer = 'X';
+  //         winner = '';
+  //         gameOver = false;
+  //         winningLine = null;
+  //         _animationController?.reset();
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print('Failed to undo move: $e');
+  //     // Optionally show error to user
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Failed to undo. Try again.')),
+  //     );
+  //   }
+  // }
+  Future<void> _undoWithCoins() async {
     try {
-      // Call undo API
-      await CoinService.undoCoins(coins: 20);
-
-      // Proceed with local game logic
-      if (moveHistory.isNotEmpty) {
-        setState(() {
-          board = moveHistory.removeLast();
-          currentPlayer = 'X';
-          winner = '';
-          gameOver = false;
-          winningLine = null;
-          _animationController?.reset();
-        });
-      }
+      await CoinService.undoCoins(coins: 20); // Deduct coins
+      AudioHelper().playMoneySound();
+      _undoMove(); // Then undo
     } catch (e) {
-      print('Failed to undo move: $e');
-      // Optionally show error to user
+      print('Failed to undo with coins: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to undo. Try again.')),
+        const SnackBar(content: Text('Not enough coins to undo.')),
       );
+    }
+  }
+
+  void _undoMove() {
+    if (moveHistory.isNotEmpty) {
+      setState(() {
+        board = moveHistory.removeLast();
+        currentPlayer = 'X';
+        winner = '';
+        gameOver = false;
+        winningLine = null;
+        _animationController?.reset();
+      });
     }
   }
 
@@ -341,7 +440,8 @@ class _TicTacToeGameState extends State<TicTacToeGame>
   //   }
   // }
   void _makeAIMove() {
-    if (gameOver) return;
+    // if (gameOver) return;
+    if (gameOver || currentPlayer != 'O') return;
     var move = widget.difficulty == 'EASY'
         ? _randomMove()
         : widget.difficulty == 'MEDIUM'
@@ -577,20 +677,169 @@ class _TicTacToeGameState extends State<TicTacToeGame>
       ),
     );
   }
+  // void _showGameOverDialog(String message) {
+  //   bool isDraw = message.toLowerCase().contains('draw');
+  //   bool playerWon = message.contains('X') && !isDraw;
+  //   bool opponentWon = message.contains('O') && !isDraw;
+  //   bool isAgainstAIAndPlayerWon = widget.isAI && playerWon;
+  //
+  //   if (isAgainstAIAndPlayerWon) {
+  //     AudioHelper().playWinSound();
+  //     AudioHelper().playMoneySound();
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => WinnerPage(
+  //           coinReward: 5,
+  //           onContinue: () {
+  //             Navigator.pop(context);
+  //             _resetGame();
+  //           },
+  //         ),
+  //       ),
+  //     );
+  //   } else {
+  //     String finalMessage = '';
+  //     Color iconColor;
+  //
+  //     if (isDraw) {
+  //       AudioHelper().playLoseSound();
+  //       finalMessage = 'Better luck next time!';
+  //       iconColor = Colors.blue;
+  //     } else if (message.contains('X')) {
+  //       AudioHelper().playWinSound();
+  //       message = widget.isAI ? 'You won!' : '$playerXName Wins!';
+  //       finalMessage = widget.isAI
+  //           ? 'You won against the AI!'
+  //           : '$playerXName is the winner!';
+  //       iconColor = widget.isAI ? Colors.yellow : Colors.blue;
+  //     } else {
+  //       AudioHelper().playLoseSound();
+  //       message = widget.isAI ? 'AI Wins!' : '$playerOName Wins!';
+  //       finalMessage = widget.isAI
+  //           ? 'Oops! You lost this one.'
+  //           : '$playerOName is the winner!';
+  //       iconColor = widget.isAI ? Colors.red : Colors.blue;
+  //     }
+  //
+  //     showDialog(
+  //       context: context,
+  //       barrierDismissible: false,
+  //       builder: (_) => AlertDialog(
+  //         backgroundColor: Colors.transparent,
+  //         contentPadding: EdgeInsets.zero,
+  //         titlePadding: EdgeInsets.zero,
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(20),
+  //         ),
+  //         content: Container(
+  //           decoration: const BoxDecoration(
+  //             gradient: LinearGradient(
+  //               begin: Alignment.topCenter,
+  //               end: Alignment.bottomCenter,
+  //               colors: [
+  //                 Color(0xFFA949F2),
+  //                 Color(0xFF3304B3),
+  //               ],
+  //             ),
+  //             borderRadius: BorderRadius.all(Radius.circular(20)),
+  //           ),
+  //           child: Padding(
+  //             padding: const EdgeInsets.all(16.0),
+  //             child: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 Text(
+  //                   message,
+  //                   textAlign: TextAlign.center,
+  //                   style: const TextStyle(
+  //                     color: Colors.white,
+  //                     fontWeight: FontWeight.bold,
+  //                     fontSize: 24,
+  //                   ),
+  //                 ),
+  //                 const SizedBox(height: 10),
+  //                 Icon(
+  //                   Icons.sentiment_very_satisfied,
+  //                   color: iconColor,
+  //                   size: 80,
+  //                 ),
+  //                 const SizedBox(height: 10),
+  //                 Text(
+  //                   finalMessage,
+  //                   textAlign: TextAlign.center,
+  //                   style: const TextStyle(
+  //                     color: Colors.white,
+  //                     fontSize: 16,
+  //                   ),
+  //                 ),
+  //                 const SizedBox(height: 20),
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     RoundedGradientButton(
+  //                       width: 115,
+  //                       text: 'Home',
+  //                       onPressed: () {
+  //                         AudioHelper().stopWinOrLoseSound();
+  //                         Navigator.pop(context);
+  //                         Navigator.pop(context);
+  //                       },
+  //                     ),
+  //                     RoundedGradientButton(
+  //                       width: 115,
+  //                       text: 'Replay',
+  //                       onPressed: () {
+  //                         AudioHelper().stopWinOrLoseSound();
+  //                         Navigator.pop(context);
+  //                         _resetGame();
+  //                       },
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //   }
+  // }
   void _showGameOverDialog(String message) {
     bool isDraw = message.toLowerCase().contains('draw');
     bool playerWon = message.contains('X') && !isDraw;
     bool opponentWon = message.contains('O') && !isDraw;
     bool isAgainstAIAndPlayerWon = widget.isAI && playerWon;
 
-    if (isAgainstAIAndPlayerWon) {
+    if (!widget.isAI && !isDraw) {
+      // Player vs Player mode and someone won
+      AudioHelper().playWinSound();
+      String finalMessage = playerWon
+          ? '$playerXName is the winner!'
+          : '$playerOName is the winner!';
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WinnerPage(
+            message: finalMessage, // Pass the final message
+            isPlayer: true, // Indicate it's a player win
+            onContinue: () {
+              Navigator.pop(context);
+              _resetGame();
+            },
+          ),
+        ),
+      );
+    } else if (isAgainstAIAndPlayerWon) {
+      // Player vs AI and player won
       AudioHelper().playWinSound();
       AudioHelper().playMoneySound();
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => WinnerPage(
-            coinReward: 5,
+            coinReward: 5, // Keep coin reward for AI mode
+            isPlayer: false, // Player won against AI
             onContinue: () {
               Navigator.pop(context);
               _resetGame();
@@ -599,14 +848,15 @@ class _TicTacToeGameState extends State<TicTacToeGame>
         ),
       );
     } else {
+      // Draw or AI won
       String finalMessage = '';
       Color iconColor;
 
       if (isDraw) {
         AudioHelper().playLoseSound();
-        finalMessage = 'Better luck next time!';
+        finalMessage = 'Ohhh! It\'s a Tie!';
         iconColor = Colors.blue;
-      } else if (message.contains('X')) {
+      } else if (playerWon) {
         AudioHelper().playWinSound();
         message = widget.isAI ? 'You won!' : '$playerXName Wins!';
         finalMessage = widget.isAI
@@ -660,7 +910,10 @@ class _TicTacToeGameState extends State<TicTacToeGame>
                   ),
                   const SizedBox(height: 10),
                   Icon(
-                    Icons.sentiment_very_satisfied,
+                    // Icons.sentiment_dissatisfied,
+                    isDraw
+                        ? Icons.sentiment_neutral_rounded
+                        : (!playerWon ? Icons.sentiment_dissatisfied : Icons.sentiment_satisfied_alt),
                     color: iconColor,
                     size: 80,
                   ),
@@ -690,9 +943,23 @@ class _TicTacToeGameState extends State<TicTacToeGame>
                         width: 115,
                         text: 'Replay',
                         onPressed: () {
-                          AudioHelper().stopWinOrLoseSound();
-                          Navigator.pop(context);
-                          _resetGame();
+                          // AudioHelper().stopWinOrLoseSound();
+                          // Navigator.pop(context);
+                          // _resetGame();
+                          checkInternetAndProceed(context, () {
+                            AudioHelper().stopWinOrLoseSound();
+                            Navigator.pop(context);
+                            _resetGame();
+                            // Navigator.pop(context);
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => AdPlaybackPage(
+                            //       onAdComplete: _undoMove,
+                            //     ),
+                            //   ),
+                            // );
+                          });
                         },
                       ),
                     ],
@@ -804,6 +1071,220 @@ class _TicTacToeGameState extends State<TicTacToeGame>
 
 
               const SizedBox(height: 60),
+              // Stack(
+              //   clipBehavior: Clip.none,
+              //   alignment: Alignment.center,
+              //   children: [
+              //     Column(
+              //       children: List.generate(3, (row) {
+              //         return Row(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: List.generate(3, (col) => _buildCell(row, col)),
+              //         );
+              //       }),
+              //     ),
+              //     // Add this Positioned widget for difficulty display
+              //     Positioned(
+              //       top: -25,
+              //       // left: -1,
+              //       right: 45,
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: [
+              //           Container(width:widget.difficulty == 'MEDIUM' ?110 : 125), // Spacer for first cell
+              //           Container(width:widget.difficulty == 'MEDIUM' ?115 : 125), // Spacer for second cell
+              //           if(widget.difficulty != '')
+              //             // const SizedBox(width: 112), // Spacer for third cell
+              //           Container(
+              //             padding: const EdgeInsets.only(bottom: 0,left: 10,right: 10,top: 0),
+              //             decoration: BoxDecoration(
+              //               color: const Color(0xFF400CB9),
+              //               borderRadius: BorderRadius.circular(6),
+              //               border: Border.all(color: Colors.white, width: 1),
+              //               boxShadow: const [
+              //                 BoxShadow(
+              //                   color: Colors.black26,
+              //                   blurRadius: 4,
+              //                   offset: Offset(0, 2),
+              //                 ),
+              //               ],
+              //             ),
+              //             child: Text(
+              //               widget.difficulty,
+              //               style: const TextStyle(
+              //                 fontSize: 14,
+              //                 fontFamily: 'Pridi',
+              //                 fontWeight: FontWeight.w500,
+              //                 color: Colors.white,
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //     if (winningLine != null)
+              //       CustomPaint(
+              //         size: const Size(336, 336),
+              //         painter: WinningLinePainter(
+              //           winningLine: winningLine!,
+              //           progress: _animation?.value ?? 0,
+              //         ),
+              //       ),
+              //   ],
+              // ),
+              // Column(
+              //   children: [
+              //     // 3x3 Grid
+              //     Row(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: [
+              //         Container(width: widget.difficulty == 'MEDIUM' ? 110 : 125), // Spacer for first cell
+              //         Container(width: widget.difficulty == 'MEDIUM' ? 115 : 125), // Spacer for second cell
+              //         if (widget.difficulty != '')
+              //           Padding(
+              //             padding: const EdgeInsets.only(left: 10.0),
+              //             child: Container(
+              //               padding: const EdgeInsets.symmetric(horizontal: 10),
+              //               decoration: BoxDecoration(
+              //                 color: const Color(0xFF400CB9),
+              //                 borderRadius: BorderRadius.circular(6),
+              //                 border: Border.all(color: Colors.white, width: 1),
+              //                 boxShadow: const [
+              //                   BoxShadow(
+              //                     color: Colors.black26,
+              //                     blurRadius: 4,
+              //                     offset: Offset(0, 2),
+              //                   ),
+              //                 ],
+              //               ),
+              //               child: Text(
+              //                 widget.difficulty,
+              //                 style: const TextStyle(
+              //                   fontSize: 14,
+              //                   fontFamily: 'Pridi',
+              //                   fontWeight: FontWeight.w500,
+              //                   color: Colors.white,
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //       ],
+              //     ),
+              //
+              //     ...List.generate(3, (row) {
+              //       return Row(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: List.generate(3, (col) => _buildCell(row, col)),
+              //       );
+              //     }),
+              //     if (winningLine != null)
+              //       CustomPaint(
+              //         size: const Size(336, 336),
+              //         painter: WinningLinePainter(
+              //           winningLine: winningLine!,
+              //           progress: _animation?.value ?? 0,
+              //         ),
+              //       ),
+              //     // const SizedBox(height: 16), // Spacing between grid and difficulty row
+              //
+              //     // Difficulty Row
+              //
+              //   ],
+              // ),
+              Column(
+                children: [
+                  // Difficulty Label Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(width: widget.difficulty == 'MEDIUM' ? 110 : 125),
+                      Container(width: widget.difficulty == 'MEDIUM' ? 115 : 125),
+                      if (widget.difficulty != '')
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF400CB9),
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: Colors.white, width: 1),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              widget.difficulty,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Pridi',
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+
+                  // const SizedBox(height: 16),
+
+                  // Grid + Winning Line using Stack
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Grid
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(3, (row) {
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(3, (col) => _buildCell(row, col)),
+                          );
+                        }),
+                      ),
+
+                      // Winning Line Overlay
+                      if (winningLine != null)
+                        CustomPaint(
+                          size: const Size(336, 336), // Adjust based on grid size
+                          painter: WinningLinePainter(
+                            winningLine: winningLine!,
+                            progress: _animation?.value ?? 0,
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+
+              // Stack(
+              //   alignment: Alignment.center,
+              //   children: [
+              //     Column(
+              //       children: List.generate(3, (row) {
+              //         return Row(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children:
+              //           List.generate(3, (col) => _buildCell(row, col)),
+              //         );
+              //       }),
+              //
+              //     ),
+              //     if (winningLine != null)
+              //       CustomPaint(
+              //         size: const Size(336, 336),
+              //         painter: WinningLinePainter(
+              //           winningLine: winningLine!,
+              //           progress: _animation?.value ?? 0,
+              //         ),
+              //       ),
+              //   ],
+              // ),
+
               // widget.difficulty == ''
               //     ? SizedBox(
               //   height: 24,
@@ -844,90 +1325,6 @@ class _TicTacToeGameState extends State<TicTacToeGame>
               //       ),
               //     ),
               //     SizedBox(width: 50)
-              //   ],
-              // ),
-              Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.center,
-                children: [
-                  Column(
-                    children: List.generate(3, (row) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(3, (col) => _buildCell(row, col)),
-                      );
-                    }),
-                  ),
-                  // Add this Positioned widget for difficulty display
-                  Positioned(
-                    top: -25,
-                    // left: -1,
-                    right: 45,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(width:widget.difficulty == 'MEDIUM' ?110 : 125), // Spacer for first cell
-                        Container(width:widget.difficulty == 'MEDIUM' ?115 : 125), // Spacer for second cell
-                        if(widget.difficulty != '')
-                          // const SizedBox(width: 112), // Spacer for third cell
-                        Container(
-                          padding: const EdgeInsets.only(bottom: 0,left: 10,right: 10,top: 0),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF400CB9),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: Colors.white, width: 1),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            widget.difficulty,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Pridi',
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (winningLine != null)
-                    CustomPaint(
-                      size: const Size(336, 336),
-                      painter: WinningLinePainter(
-                        winningLine: winningLine!,
-                        progress: _animation?.value ?? 0,
-                      ),
-                    ),
-                ],
-              ),
-              // Stack(
-              //   alignment: Alignment.center,
-              //   children: [
-              //     Column(
-              //       children: List.generate(3, (row) {
-              //         return Row(
-              //           mainAxisAlignment: MainAxisAlignment.center,
-              //           children:
-              //           List.generate(3, (col) => _buildCell(row, col)),
-              //         );
-              //       }),
-              //
-              //     ),
-              //     if (winningLine != null)
-              //       CustomPaint(
-              //         size: const Size(336, 336),
-              //         painter: WinningLinePainter(
-              //           winningLine: winningLine!,
-              //           progress: _animation?.value ?? 0,
-              //         ),
-              //       ),
               //   ],
               // ),
               const SizedBox(height: 60),

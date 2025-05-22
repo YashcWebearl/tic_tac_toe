@@ -35,6 +35,8 @@
 //           // home: StartScreen(),
 //           home: SignInDemo(),
 //         );
+import 'dart:async';
+
 //       },
 //     );
 //   }
@@ -42,10 +44,14 @@
 
 
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tic_tac_toe/view/game.dart';
 import 'package:tic_tac_toe/view/google_sign_in.dart';
 import 'package:tic_tac_toe/view/splash.dart';
 import 'package:tic_tac_toe/view/start_screen.dart';
@@ -67,6 +73,7 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
   await CoinNotifier.initialize();
+  MobileAds.instance.initialize();
   runApp(const MyApp()); // ← No need to pass login state here
 }
 
@@ -78,14 +85,26 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late final StreamSubscription<List<ConnectivityResult>> _subscription;
+
   bool? isLoggedIn;
 
   @override
   void initState() {
     super.initState();
+    _subscription = Connectivity().onConnectivityChanged.listen((results) {
+      final isOffline = results.contains(ConnectivityResult.none);
+      if (isOffline) {
+        Fluttertoast.showToast(msg: "You're offline");
+      }
+    });
     _checkLoginStatus();
   }
-
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
   Future<void> _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
@@ -114,7 +133,9 @@ class _MyAppState extends State<MyApp> {
             //     : isLoggedIn!
             //     ?  StartScreen()
             //     :  WelcomeScreen()
+
             home: const SplashScreen(),
+
           ),
         );
       },

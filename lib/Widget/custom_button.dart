@@ -29,7 +29,7 @@ class RoundedGradientButton extends StatelessWidget {
       child: Container(
         width: width,
         height: height,
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [Color(0xFF49E7F2), Color(0xFF423EB7)],
@@ -118,12 +118,12 @@ class RoundedGradientButton extends StatelessWidget {
           text!,
           style: const TextStyle(
             color: Color(0xFF2C004C),
-            fontSize: 20,
+            fontSize: 18,
             fontFamily: 'Pridi',
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 6),
         rightIcon!,
       ];
     } else if (leftIcon != null && text != null) {
@@ -134,15 +134,12 @@ class RoundedGradientButton extends StatelessWidget {
           text!,
           style: const TextStyle(
             color: Color(0xFF2C004C),
-            fontSize: 20,
+            fontSize: 18,
             fontFamily: 'Pridi',
             fontWeight: FontWeight.bold,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: leftIcon!,
-        ),
+        leftIcon!,
       ];
     } else if (rightIcon != null && text != null) {
       // Right icon and label
@@ -156,7 +153,7 @@ class RoundedGradientButton extends StatelessWidget {
           text!,
           style: const TextStyle(
             color: Color(0xFF2C004C),
-            fontSize: 20,
+            fontSize: 18,
             fontFamily: 'Pridi',
             fontWeight: FontWeight.bold,
           ),
@@ -171,7 +168,7 @@ class RoundedGradientButton extends StatelessWidget {
           text ?? '',
           style: const TextStyle(
             color: Color(0xFF2C004C),
-            fontSize: 20,
+            fontSize: 18,
             fontFamily: 'Pridi',
             fontWeight: FontWeight.bold,
           ),

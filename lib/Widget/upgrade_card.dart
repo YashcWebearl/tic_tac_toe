@@ -68,24 +68,104 @@ class PackageCard extends StatelessWidget {
                       children: [
                         Text(title,
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Inter',
                               fontSize: 16,
                             )),
 
                       ],
                     ),
                     if (!isFree)
-                      Text(
-                        price,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
+                      // Row(
+                      //   children: [
+                      //     Text(
+                      //       '\$22',
+                      //       style: const TextStyle(
+                      //         fontWeight: FontWeight.w500,
+                      //         fontSize: 20,
+                      //         fontFamily: 'Inter',
+                      //       ),
+                      //     ),
+                      //     Text('Or'),
+                      //     Row(
+                      //       children: [
+                      //         Image.asset(
+                      //           'assets/coin.png', // Replace with your coin asset
+                      //           width: 25,
+                      //           height: 25,
+                      //         ),
+                      //         Text(
+                      //           price,
+                      //           style: const TextStyle(
+                      //             fontWeight: FontWeight.w500,
+                      //             fontSize: 20,
+                      //             fontFamily: 'Inter',
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //
+                      //   ],
+                      // ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Plain dollar option
+                          Text(
+                            'Rs 200',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              fontFamily: 'Inter',
+                            ),
+                          ),
+
+                          // Separator (subtle visual hint of choice)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Container(
+                              width: 3,
+                              height: 24,
+                              color: Colors.grey.shade300,
+                            ),
+                          ),
+
+                          // Coin option
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey.shade300),
+                            ),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  'assets/coin.png',
+                                  width: 22,
+                                  height: 22,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  price,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    fontFamily: 'Inter',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
+
+
                   ],
                 ),
                 Container(
-                  width: 50,
+                  width: 80,
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -96,13 +176,15 @@ class PackageCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
-                    isFree ? "Free" : "Paid",
+                    isFree ? "Active" : "Pay Now",
                     style:  TextStyle(
                       color: isFree ? Colors.green : Colors.red,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Inter',
+
                       fontSize: 12,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ],

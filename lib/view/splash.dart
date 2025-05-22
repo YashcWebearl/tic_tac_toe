@@ -104,7 +104,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: 20),
               const Text(
-                'Please update the SaptaVidhi app to continue.',
+                'Please update the XOXO app to continue.',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,

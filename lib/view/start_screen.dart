@@ -10,6 +10,7 @@ import '../Widget/bg_container.dart';
 import '../Widget/coin_add_service.dart';
 import '../Widget/custom_button.dart';
 import '../Widget/setting_dialoug.dart';
+import 'ad_show.dart';
 
 class StartScreen extends StatefulWidget {
   final bool? coinadd;
@@ -29,9 +30,22 @@ class _StartScreenState extends State<StartScreen> {
     _confettiController = ConfettiController(duration: const Duration(seconds: 2));
     _getToken();
 
+    // if (widget.coinadd == true) {
+    //   _addCoins(50, "Reward");
+    // }
     if (widget.coinadd == true) {
-      _addCoins(50, "Reward");
+      AudioHelper().playMoneySound();
+      _confettiController.play();
+      _showCoinReceivedDialog(50, "Reward");
+
+      // ⏱️ Auto-close the dialog after 2 seconds
+      Future.delayed(const Duration(seconds: 2), () {
+        if (Navigator.canPop(context)) {
+          Navigator.of(context).pop(); // Close dialog
+        }
+      });
     }
+
 
     _checkAndGiveDailyReward();
   }
@@ -147,12 +161,12 @@ class _StartScreenState extends State<StartScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 20),
-                          RoundedGradientButton(
-                            text: 'Continue',
-                            leftIcon: const Icon(Icons.play_arrow, color: Color(0xFF2C004C), size: 30),
-                            onPressed: () => Navigator.pop(context),
-                          ),
+                          // const SizedBox(height: 20),
+                          // RoundedGradientButton(
+                          //   text: 'Continue',
+                          //   leftIcon: const Icon(Icons.play_arrow, color: Color(0xFF2C004C), size: 30),
+                          //   onPressed: () => Navigator.pop(context),
+                          // ),
                         ],
                       ),
                     ),
@@ -241,6 +255,35 @@ class _StartScreenState extends State<StartScreen> {
                   },
                 ),
                 SizedBox(height: 15.h),
+                RoundedGradientButton(
+                  width: 300,
+                  text: 'Play Add And Earn Reward',
+                  leftIcon: const Icon(Icons.play_circle_outlined, color: Color(0xFF2C004C), size: 30),
+                  // onPressed: () {
+                  //   // showDialog(context: context, builder: (_) => const SettingsDialog());
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => AdPlaybackPage(
+                  //         // onAdComplete: _undoMove,
+                  //         onAdComplete: _addCoins(5,'Ad Reward'),
+                  //       ),
+                  //     ),
+                  //   );
+                  // },
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AdPlaybackPage(
+                          onAdComplete: () {
+                            _addCoins(5, 'Ad Reward');
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 // RoundedGradientButton(
                 //   text: 'Upgrade',
                 //   leftIcon: Container(

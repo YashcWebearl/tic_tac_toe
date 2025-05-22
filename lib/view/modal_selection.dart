@@ -294,6 +294,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tic_tac_toe/view/start_screen.dart';
 import '../Widget/bg_container.dart';
+import '../Widget/checkInternet.dart';
 import '../Widget/custom_appbar.dart';
 import '../Widget/custom_button.dart';
 import '../Widget/player_name_dialouge.dart';
@@ -409,16 +410,25 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                           } else {
                             difficulty = 'HARD';
                           }
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TicTacToeGame(
-                                isAI: true,
-                                difficulty: difficulty,
+                          checkInternetAndProceed(context, () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                 TicTacToeGame(isAI: true, difficulty:difficulty ),
                               ),
-                            ),
-                          );
+                            );
+                          });
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => TicTacToeGame(
+                          //       isAI: true,
+                          //       difficulty: difficulty,
+                          //     ),
+                          //   ),
+                          // );
                         },
                       ),
                     ],
@@ -455,7 +465,18 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                 SizedBox(height: 40),
                 CustomTopBar(
                   // coins: 500,
-                  onBack: () => Navigator.pop(context),
+                  onBack: () {
+                    if (widget.fromWinner) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  StartScreen()),
+                      );
+                      // return false;
+                    }
+                    else{
+                      Navigator.pop(context);
+                    }
+                  },
                   onSettings: () {
                     showDialog(
                       context: context,
@@ -498,13 +519,15 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                   rightIcon: Icon(Icons.person,
                       color: const Color(0xFF2C004C), size: 30),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                        const TicTacToeGame(isAI: false, difficulty: ''),
-                      ),
-                    );
+                    checkInternetAndProceed(context, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                          const TicTacToeGame(isAI: false, difficulty: ''),
+                        ),
+                      );
+                    });
                   },
                 ),
               ],
